@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "deploy:cf": "opennextjs-cloudflare build && node scripts/assert-worker-lean.mjs && opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
@@ -21,7 +21,7 @@
     "mammoth": "^1.8.0",
     "next": "^15.5.21",
     "openai": "^6.33.0",
-    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^6.2.108",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -29,7 +29,6 @@
     "@opennextjs/cloudflare": "^1.20.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^22",
-    "@types/pdf-parse": "^1.1.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",

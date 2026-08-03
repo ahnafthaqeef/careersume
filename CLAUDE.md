@@ -16,8 +16,9 @@ Gemini / Groq / OpenAI / Anthropic.
 - `src/lib/providers/`: one adapter per provider (`gemini.ts`, `groq.ts`, `openai.ts`,
   `anthropic.ts`), a shared `types.ts`, and `index.ts` as the registry (`PROVIDERS`, `getProvider`).
 - `src/lib/ai.ts`: thin façade that routes a call to the user's chosen provider adapter.
-- Keys are encrypted with `BYOK_ENCRYPTION_KEY` (AES-256-GCM); rotating it invalidates all saved
-  keys and users must re-enter theirs.
+- Keys are encrypted with `BYOK_ENCRYPTION_KEY` (AES-256-GCM, key derived by HKDF-SHA256); rotating
+  it invalidates all saved keys and users must re-enter theirs. Stored ciphertext carries a `v2:`
+  marker; anything without it is treated as unreadable and the user is asked for their key again.
 - Master profile (parsed resume, saved facts reused across tailoring runs) lives in Supabase, not
   localStorage.
 
@@ -31,6 +32,8 @@ Gemini / Groq / OpenAI / Anthropic.
 - `src/app/api/token-stats/route.ts`: admin-only per-provider usage (no pooled limits)
 - `src/components/ResumeOutput.tsx`, `KeyWizard.tsx`, `AppNav.tsx`: key UI surfaces
 - `src/lib/templates.ts`: resume template definitions
+- `src/lib/parse-resume-file.ts`: PDF/DOCX/TXT to text, in the browser (pdfjs-dist + mammoth,
+  both lazily imported). Resume files are never uploaded; there is no server parsing endpoint
 - `src/types/index.ts`: shared TypeScript interfaces
 
 ## Environment
@@ -53,8 +56,9 @@ Run these migrations, in order, against a fresh project:
   `resume_generations` / `cover_letters` / `ats_boosts` logs. Must run first, the others reference it
 - `supabase_byok_keys.sql`: encrypted per-user provider keys
 - `supabase_user_profiles.sql`: master profile storage
-- `supabase_usage_counters.sql`: per-user daily caps on scraping/parsing helper endpoints
-  (fetch-job-url, search-jobs, parse-profile); resume generation itself is unlimited
+- `supabase_usage_counters.sql`: per-user daily caps on the two helper endpoints that consume our
+  infra (fetch-job-url, search-jobs); resume generation itself is unlimited. Re-running it deletes
+  any leftover `parse-profile` counters, which the endpoint-name constraint no longer allows
 - `supabase_job_tracker.sql`: saved applications and their stages
 - `supabase_feedback.sql`: in-app bug/idea reports, admin-only reads
 
@@ -76,9 +80,22 @@ for self-hosters. Config lives in `wrangler.jsonc` (worker `careersume`, `nodejs
 `global_fetch_strictly_public`) and `open-next.config.ts` (defaults, no incremental cache: nothing
 here uses ISR).
 
+**It fits the Workers FREE plan, and should stay that way.** Two things keep it there, and both are
+easy to undo by accident:
+- **Bundle under the 3 MB gzip limit.** Check with `npx opennextjs-cloudflare build && npx wrangler
+  deploy --dry-run`, which prints `Total Upload / gzip`. Anything heavy that a client component
+  imports lands in the server bundle too, because "use client" files are compiled for SSR as well;
+  `next.config.ts` resolves pdfjs-dist and mammoth to an empty module on the server for exactly
+  that reason. **That exclusion is a webpack-only `resolve.alias`, and Turbopack ignores it without
+  complaining**, so `next.config.ts` throws on load when `process.env.TURBOPACK` is set: never build
+  this project with `--turbopack`. `scripts/assert-worker-lean.mjs` is the backstop, and
+  `npm run deploy:cf` runs it before deploying.
+- **No CPU-heavy work in a request.** The free plan allows 10ms CPU per request. Resume parsing is
+  a browser job, and BYOK key derivation uses HKDF (microseconds) rather than a memory-hard KDF.
+
 ```bash
 npm run preview    # opennextjs-cloudflare build && preview, real workerd on :8787
-npm run deploy:cf  # opennextjs-cloudflare build && deploy
+npm run deploy:cf  # build, assert the Worker is still lean, then deploy
 ```
 
 - Local Workers secrets go in `.dev.vars` (gitignored); copy `.dev.vars.example`.

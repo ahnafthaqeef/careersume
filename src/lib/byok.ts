@@ -1,7 +1,7 @@
 // src/lib/byok.ts
 // BYOK key encryption + persistence helpers. Server-only (uses node:crypto).
 
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'node:crypto'
+import { createCipheriv, createDecipheriv, hkdfSync, randomBytes } from 'node:crypto'
 import { adminClient } from '@/lib/supabase/admin'
 import type { ProviderId } from '@/lib/providers'
 
@@ -11,13 +11,24 @@ export type Provider = ProviderId
 const ALGO = 'aes-256-gcm'
 const IV_BYTES = 12
 
+// Marks the derivation used for a stored ciphertext. v1 (unprefixed) derived the
+// key with scrypt, which is memory-hard on purpose and cost tens of milliseconds
+// of CPU per request; a Workers free-plan request only gets 10ms. Memory-hardness
+// is there to slow brute force against a low-entropy password, and
+// BYOK_ENCRYPTION_KEY is a long random secret, so it bought nothing here.
+// No v1 ciphertext exists to migrate: `user_api_keys` has never been created in
+// production, so anything without this prefix is treated as unreadable and the
+// user is simply asked for their key again.
+const FORMAT = 'v2:'
+
 function getKey(): Buffer {
   const secret = process.env.BYOK_ENCRYPTION_KEY
   if (!secret || secret.length < 16) {
     throw new Error('BYOK_ENCRYPTION_KEY must be set to a string of at least 16 chars')
   }
-  // scrypt derives a deterministic 32-byte key from the secret + a fixed app salt
-  return scryptSync(secret, 'careersume-byok-v1', 32)
+  // HKDF-SHA256 over an already high-entropy secret: microseconds, and the fixed
+  // salt keeps the derived key stable across deploys.
+  return Buffer.from(hkdfSync('sha256', secret, 'careersume-byok-v1', ALGO, 32))
 }
 
 export function encryptKey(plaintext: string): { encrypted_key: string; iv: string; auth_tag: string } {
@@ -25,17 +36,20 @@ export function encryptKey(plaintext: string): { encrypted_key: string; iv: stri
   const cipher = createCipheriv(ALGO, getKey(), iv)
   const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()])
   return {
-    encrypted_key: encrypted.toString('base64'),
+    encrypted_key: FORMAT + encrypted.toString('base64'),
     iv: iv.toString('base64'),
     auth_tag: cipher.getAuthTag().toString('base64'),
   }
 }
 
 export function decryptKey(record: { encrypted_key: string; iv: string; auth_tag: string }): string {
+  if (!record.encrypted_key.startsWith(FORMAT)) {
+    throw new Error('Stored key uses an unsupported ciphertext format')
+  }
   const decipher = createDecipheriv(ALGO, getKey(), Buffer.from(record.iv, 'base64'))
   decipher.setAuthTag(Buffer.from(record.auth_tag, 'base64'))
   const decrypted = Buffer.concat([
-    decipher.update(Buffer.from(record.encrypted_key, 'base64')),
+    decipher.update(Buffer.from(record.encrypted_key.slice(FORMAT.length), 'base64')),
     decipher.final(),
   ])
   return decrypted.toString('utf8')

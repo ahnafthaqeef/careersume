@@ -1,10 +1,10 @@
 // src/lib/usage.ts
-// Quiet daily caps for endpoints that consume OUR infra (scraping, parsing).
+// Quiet daily caps for endpoints that consume OUR infra (scraping, searching).
 // Resume generation itself is BYOK and never limited by this.
 
 import { adminClient } from '@/lib/supabase/admin'
 
-export type UsageEndpoint = 'fetch-job-url' | 'search-jobs' | 'parse-profile'
+export type UsageEndpoint = 'fetch-job-url' | 'search-jobs'
 
 export async function checkAndIncrementUsage(
   userId: string,

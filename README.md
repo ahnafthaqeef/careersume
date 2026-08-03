@@ -27,14 +27,14 @@ The loop, in order:
 Underneath all of it:
 
 - **Bring your own key.** Gemini, Groq, OpenAI, or Anthropic. One key, connected once in the onboarding wizard, validated live against the provider before it is saved.
-- **Your data stays yours.** Profile, documents, and key live in your own account behind Postgres row-level security. Nothing is sold, nothing trains anything, and your key is never sent to the browser.
+- **Your data stays yours.** Profile, documents, and key live in your own account behind Postgres row-level security. Nothing is sold, nothing trains anything, and your key is never sent to the browser. Resume files are parsed in your browser, so the file itself is never uploaded; only the text you approve is sent.
 
 ## How is it free?
 
 There is no paid tier waiting at the end of this. The app costs nothing to run because it never pays an AI bill: you connect your own provider key, and every generation runs on that.
 
 - **The key is free too.** A [Google AI Studio](https://aistudio.google.com/apikey) key takes about two minutes, needs no credit card, and its free tier comfortably covers a job hunt. Groq, OpenAI, and Anthropic keys work the same way if you already have one.
-- **No artificial caps.** No credits, no three-a-month wall. Your own provider quota is the only limit. Three helper endpoints that scrape, search, and parse on the server do carry a quiet daily cap, since those cost the host rather than you. Resume generation itself is never capped.
+- **No artificial caps.** No credits, no three-a-month wall. Your own provider quota is the only limit. Two helper endpoints that scrape and search on the server do carry a quiet daily cap, since those cost the host rather than you. Resume generation itself is never capped.
 - **MIT licensed.** Read it, fork it, ship it inside something else. See [Self-hosting](#self-hosting) if you want your own copy with your own database.
 
 ## Self-hosting
@@ -67,7 +67,7 @@ Then open the Supabase SQL editor and run these six files **in this order**:
 1. `supabase_core.sql`, the per-user profile row plus the resume, cover letter, and ATS boost logs.
 2. `supabase_byok_keys.sql`, encrypted per-user provider keys with row-level security.
 3. `supabase_user_profiles.sql`, the master profile, one row per user.
-4. `supabase_usage_counters.sql`, daily caps for the scraping, searching, and parsing helper endpoints.
+4. `supabase_usage_counters.sql`, daily caps for the two helper endpoints that scrape and search.
 5. `supabase_job_tracker.sql`, saved applications and the stage each one is at.
 6. `supabase_feedback.sql`, in-app bug and idea reports, readable only by an admin.
 
@@ -83,7 +83,7 @@ The app comes up on [http://localhost:3001](http://localhost:3001). Register an 
 
 Any Node host will do: `npm run build`, then `npm start`.
 
-The first-class path is Cloudflare Workers, through the OpenNext adapter. `wrangler.jsonc` is in the repo with `nodejs_compat` already set, and `npm run deploy:cf` builds and ships in one step. Put production secrets in with `wrangler secret put NAME`, and keep local Workers-runtime secrets in `.dev.vars`, copied from `.dev.vars.example`. This route needs the Workers Paid plan: the bundle is larger than the free plan allows, and parsing an uploaded PDF needs more CPU time than the free tier gives a request.
+The first-class path is Cloudflare Workers, through the OpenNext adapter. `wrangler.jsonc` is in the repo with `nodejs_compat` already set, and `npm run deploy:cf` builds and ships in one step. Put production secrets in with `wrangler secret put NAME`, and keep local Workers-runtime secrets in `.dev.vars`, copied from `.dev.vars.example`. It fits the Workers free plan: the Worker is comfortably under the 3 MB compressed limit, resume files are parsed in the browser rather than on the server, and no request does enough work to trouble the free tier's CPU budget.
 
 ## Architecture
 
@@ -101,13 +101,14 @@ src/
     ai.ts              facade: resolves the signed-in user's key, streams from their provider
     providers/         one adapter per provider (gemini, groq, openai, anthropic) plus the registry
     byok.ts            encrypt, store, read, and delete user keys
+    parse-resume-file.ts  PDF/DOCX/TXT to text, in the browser, never uploaded
     prompts.ts         the tailoring and scoring prompts
     templates.ts       resume template definitions
 ```
 
 Adding a provider means writing one adapter in `src/lib/providers/` and listing it in `index.ts`. Everything above the facade stays untouched.
 
-**Key handling.** A user's provider key is encrypted with AES-256-GCM before it is written to Postgres, under a 32-byte key derived from `BYOK_ENCRYPTION_KEY` via scrypt. It is decrypted on the server for the life of a single request and never leaves it, so the browser never sees the plaintext key. See [SECURITY.md](SECURITY.md) for the full model and how to report a vulnerability.
+**Key handling.** A user's provider key is encrypted with AES-256-GCM before it is written to Postgres, under a 32-byte key derived from `BYOK_ENCRYPTION_KEY` via HKDF-SHA256. It is decrypted on the server for the life of a single request and never leaves it, so the browser never sees the plaintext key. See [SECURITY.md](SECURITY.md) for the full model and how to report a vulnerability.
 
 ## Contributing
 

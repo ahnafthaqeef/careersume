@@ -4,8 +4,8 @@
 	// Built by `opennextjs-cloudflare build`, not checked in.
 	"main": ".open-next/worker.js",
 	"compatibility_date": "2026-06-01",
-	// `nodejs_compat` gives the worker node:crypto (BYOK AES-256-GCM) and the
-	// Buffer/stream shims that pdf-parse and mammoth expect.
+	// `nodejs_compat` gives the worker node:crypto (BYOK AES-256-GCM key
+	// derivation and encryption) plus the Buffer shim Next.js itself uses.
 	// `global_fetch_strictly_public` keeps fetch() to our own hostname going out
 	// over the public internet instead of looping back into this worker, which is
 	// what /api/fetch-job-url and the provider adapters assume.

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { loadMasterProfile, saveMasterProfile } from "@/lib/profile";
+import { parseResumeFile } from "@/lib/parse-resume-file";
 
 interface ProfileInputProps {
   onProfileReady: (profileText: string) => void;
@@ -54,7 +55,7 @@ AI Task Manager
 
 CERTIFICATIONS
 
-AWS Certified Solutions Architect – Associate | Amazon Web Services | 2023
+AWS Certified Solutions Architect - Associate | Amazon Web Services | 2023
 Google Cloud Professional Developer | Google | 2022
 
 ACHIEVEMENTS
@@ -84,7 +85,7 @@ export default function ProfileInput({
   const [mode, setMode] = useState<"upload" | "manual">("upload");
   const [profileText, setProfileText] = useState("");
   const [savedProfile, setSavedProfile] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState("");
   const [error, setError] = useState("");
   const [isSaved, setIsSaved] = useState(false);
@@ -152,37 +153,30 @@ export default function ProfileInput({
     notifyPictureChange(profilePicture, checked);
   };
 
-  const handleFileUpload = async (file: File) => {
+  // Parsing happens here in the browser, so the resume file itself is never
+  // uploaded anywhere; only the text below, once the user is happy with it.
+  const handleResumeFile = async (file: File) => {
     if (!file) return;
-    setIsUploading(true);
+    setIsParsing(true);
     setError("");
     setUploadedFileName(file.name);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/parse-profile", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-
-      setProfileText(data.text);
+      const text = await parseResumeFile(file);
+      setProfileText(text);
       setMode("manual");
-      onProfileReady(data.text);
+      onProfileReady(text);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      setError(err instanceof Error ? err.message : "Failed to parse file. Please try again.");
     } finally {
-      setIsUploading(false);
+      setIsParsing(false);
     }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file) handleFileUpload(file);
+    if (file) handleResumeFile(file);
   };
 
   const handleSaveProfile = async () => {
@@ -315,7 +309,7 @@ export default function ProfileInput({
             onDragOver={(e) => e.preventDefault()}
             onClick={() => fileInputRef.current?.click()}
           >
-            {isUploading ? (
+            {isParsing ? (
               <p className={CAPTION}>Parsing {uploadedFileName}...</p>
             ) : (
               <>
@@ -331,7 +325,7 @@ export default function ProfileInput({
               accept=".pdf,.docx,.txt"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file) handleFileUpload(file);
+                if (file) handleResumeFile(file);
               }}
             />
           </div>
