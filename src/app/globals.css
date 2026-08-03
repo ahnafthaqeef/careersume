@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #FAFAF7;
+  --surface: #FFFFFF;
+  --ink: #111110;
+  --ink-2: #52524E;
+  --ink-3: #6E6E68;
+  --line: #E4E4DE;
+  --accent: #0F7B5F;
+  --on-accent: #FAFAF7;
+  --score-partial: #B45309;
+  --score-missing: #B91C1C;
+}
+
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    @apply antialiased;
+  }
+
+  * {
+    @apply box-border;
+  }
+}
+
+/* animate-fade-in and animate-slide-up come from tailwind.config.ts. */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-3);
+}

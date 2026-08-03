@@ -1,0 +1,20 @@
+# Local secrets for the Cloudflare Workers runtime. Copy to `.dev.vars` and fill in.
+# `npm run preview` reads this file; `next dev` reads `.env.local` instead, so keep
+# the two in sync. In production these are set with `wrangler secret put <NAME>`.
+
+# ─── Supabase ───────────────────────────────────────────────────────────────
+# Supabase project URL
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+# Supabase anon/public key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+# Supabase service role key (server-only, never expose to the client)
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+
+# ─── BYOK Encryption ─────────────────────────────────────────────────────────
+# Encrypts user-supplied AI keys at rest. Generate with `openssl rand -base64 48`; rotating invalidates saved keys.
+BYOK_ENCRYPTION_KEY=replace_with_a_long_random_string
+
+# ─── Optional ────────────────────────────────────────────────────────────────
+# RapidAPI key for JSearch, used only by the job scanner's search box. Leave it
+# unset and the rest of the app works; search returns "not configured".
+# JSEARCH_API_KEY=
