@@ -2,6 +2,8 @@
 // GET/PUT /api/profile persist to the DB for signed-in users; localStorage
 // keeps the profile usable offline and covers the pre-Supabase local copy.
 
+import { withBasePath } from "@/lib/basePath";
+
 const STORAGE_KEY = "ai-resume-master-profile";
 
 function readLocalProfile(): unknown | null {
@@ -18,7 +20,7 @@ function readLocalProfile(): unknown | null {
 export async function loadMasterProfile(): Promise<unknown | null> {
   let res: Response;
   try {
-    res = await fetch("/api/profile");
+    res = await fetch(withBasePath("/api/profile"));
   } catch {
     // Network failure: we don't know the server's state, never touch local.
     return readLocalProfile();
@@ -33,7 +35,7 @@ export async function loadMasterProfile(): Promise<unknown | null> {
   const local = readLocalProfile();
   if (local != null) {
     try {
-      const putRes = await fetch("/api/profile", {
+      const putRes = await fetch(withBasePath("/api/profile"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ profile: local }),
@@ -46,7 +48,7 @@ export async function loadMasterProfile(): Promise<unknown | null> {
 }
 
 export async function saveMasterProfile(profile: unknown): Promise<void> {
-  await fetch("/api/profile", {
+  await fetch(withBasePath("/api/profile"), {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ profile }),

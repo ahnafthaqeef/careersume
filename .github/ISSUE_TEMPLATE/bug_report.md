@@ -10,6 +10,6 @@ labels: bug
 
 **How can I reproduce it?**
 
-**Anything else that might help** (browser, self-hosted or resume.aibizmy.com, which AI provider, screenshots, console errors):
+**Anything else that might help** (browser, self-hosted or univa.my/careersume, which AI provider, screenshots, console errors):
 
 Partial reports are fine. Tell me what you know and I will ask if I need more.

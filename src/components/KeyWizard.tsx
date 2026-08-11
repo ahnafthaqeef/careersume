@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { ProviderCard, ProviderId } from "@/lib/providers";
+import { withBasePath } from "@/lib/basePath";
 
 type Step = "provider" | "instructions" | "paste" | "done";
 
@@ -107,7 +108,7 @@ export default function KeyWizard({
 
   useEffect(() => {
     if (!isSettings) return;
-    fetch("/api/byok/status")
+    fetch(withBasePath("/api/byok/status"))
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { hasKey?: boolean; provider?: ProviderId | null } | null) => {
         if (data?.hasKey && data.provider) {
@@ -127,7 +128,7 @@ export default function KeyWizard({
       const body = JSON.stringify({ provider: providerId, key: key.trim() });
       const headers = { "Content-Type": "application/json" };
 
-      const testRes = await fetch("/api/byok/test", { method: "POST", headers, body });
+      const testRes = await fetch(withBasePath("/api/byok/test"), { method: "POST", headers, body });
       const tested = await testRes.json();
       if (testRes.status === 401) {
         setError(SIGNED_OUT);
@@ -140,7 +141,7 @@ export default function KeyWizard({
         return;
       }
 
-      const saveRes = await fetch("/api/byok/save", { method: "POST", headers, body });
+      const saveRes = await fetch(withBasePath("/api/byok/save"), { method: "POST", headers, body });
       if (saveRes.status === 401) {
         setError(SIGNED_OUT);
         return;
@@ -167,7 +168,7 @@ export default function KeyWizard({
     setRemoving(true);
     setError("");
     try {
-      const res = await fetch("/api/byok/delete", {
+      const res = await fetch(withBasePath("/api/byok/delete"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider: connected }),

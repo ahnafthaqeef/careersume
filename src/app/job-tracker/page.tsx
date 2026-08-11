@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
+import { withBasePath } from "@/lib/basePath";
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
@@ -199,7 +200,7 @@ export default function JobTrackerPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/job-tracker")
+    fetch(withBasePath("/api/job-tracker"))
       .then((r) => r.json())
       .then((data) => {
         if (data.error) setError(data.error);
@@ -210,7 +211,7 @@ export default function JobTrackerPage() {
   }, []);
 
   const updateStatus = async (id: string, status: SavedJob["status"]) => {
-    const res = await fetch(`/api/job-tracker/${id}`, {
+    const res = await fetch(withBasePath(`/api/job-tracker/${id}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
@@ -220,7 +221,7 @@ export default function JobTrackerPage() {
   };
 
   const updateNotes = async (id: string, notes: string) => {
-    const res = await fetch(`/api/job-tracker/${id}`, {
+    const res = await fetch(withBasePath(`/api/job-tracker/${id}`), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ notes }),
@@ -230,7 +231,7 @@ export default function JobTrackerPage() {
   };
 
   const deleteJob = async (id: string) => {
-    const res = await fetch(`/api/job-tracker/${id}`, { method: "DELETE" });
+    const res = await fetch(withBasePath(`/api/job-tracker/${id}`), { method: "DELETE" });
     if (!res.ok) return;
     setJobs((prev) => prev.filter((j) => j.id !== id));
   };

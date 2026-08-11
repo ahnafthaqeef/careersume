@@ -8,6 +8,9 @@ const serif = Instrument_Serif({ weight: "400", subsets: ["latin"], variable: "-
 const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
+  // The app lives on a subpath, so relative metadata URLs have to resolve
+  // against the prefix rather than the domain root, which is a different site.
+  metadataBase: new URL("https://univa.my/careersume"),
   title: "Careersume: the resume, rewritten for the job",
   description:
     "Free, open-source AI resume tailoring. Paste a job description, connect your own AI key, and get an ATS-safe resume built for that exact job. Unlimited use, your data stays yours.",

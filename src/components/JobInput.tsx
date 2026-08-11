@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import type { JobAnalysis } from "@/types";
+import { withBasePath } from "@/lib/basePath";
 
 interface JobInputProps {
   onAnalysisComplete: (text: string, analysis: JobAnalysis) => void;
@@ -51,7 +52,7 @@ export default function JobInput({
       triggered.current = true;
       setJobText(initialJobText);
       setIsLoading(true);
-      fetch("/api/analyze-job", {
+      fetch(withBasePath("/api/analyze-job"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jobText: initialJobText }),
@@ -70,7 +71,7 @@ export default function JobInput({
     } else if (initialApplyUrl) {
       triggered.current = true;
       setIsLoading(true);
-      fetch("/api/fetch-job-url", {
+      fetch(withBasePath("/api/fetch-job-url"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: initialApplyUrl }),
@@ -79,7 +80,7 @@ export default function JobInput({
         .then((data) => {
           if (data.text) {
             setJobText(data.text);
-            return fetch("/api/analyze-job", {
+            return fetch(withBasePath("/api/analyze-job"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ jobText: data.text }),
@@ -111,7 +112,7 @@ export default function JobInput({
     setIsLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/fetch-job-url", {
+      const res = await fetch(withBasePath("/api/fetch-job-url"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: jobUrl }),
@@ -136,7 +137,7 @@ export default function JobInput({
     setError("");
     setAnalysis(null);
     try {
-      const res = await fetch("/api/analyze-job", {
+      const res = await fetch(withBasePath("/api/analyze-job"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jobText }),

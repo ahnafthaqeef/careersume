@@ -7,6 +7,7 @@ import AppNav from "@/components/AppNav";
 import CheckingKey from "@/components/CheckingKey";
 import { loadMasterProfile } from "@/lib/profile";
 import { useRequireKey } from "@/lib/useRequireKey";
+import { withBasePath } from "@/lib/basePath";
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
@@ -62,7 +63,7 @@ export default function CoverLetterPage() {
     setStreaming(true);
 
     try {
-      const res = await fetch("/api/generate-cover-letter", {
+      const res = await fetch(withBasePath("/api/generate-cover-letter"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

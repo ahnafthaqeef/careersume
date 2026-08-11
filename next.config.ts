@@ -12,7 +12,19 @@ if (process.env.TURBOPACK) {
   );
 }
 
+// Careersume is served from https://univa.my/careersume rather than the root of
+// its own domain: univa.my's root is a separate site, and a Worker route picks
+// up only this prefix. Next puts the prefix in front of <Link href>, router
+// navigation, and the next/image loader on its own, and does nothing to a URL
+// string the app builds itself, which is what `src/lib/basePath.ts` is for.
+const basePath = "/careersume";
+
 const nextConfig: NextConfig = {
+  basePath,
+  // The same value, readable at runtime. `env` entries are inlined into the
+  // client and server bundles at build time, so `src/lib/basePath.ts` reads the
+  // prefix from here instead of keeping a second copy of the string in sync.
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
   // `src/lib/parse-resume-file.ts` pulls pdfjs-dist and mammoth in lazily, from a
   // "use client" component. A client component is still compiled into the server
   // graph for SSR, so without this both libraries ride along into the Worker

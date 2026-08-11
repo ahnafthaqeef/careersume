@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { withBasePath } from "@/lib/basePath";
 
 /**
  * Gates a page on the signed-in user having a connected AI key. Sends them to
@@ -15,7 +16,7 @@ export function useRequireKey(): { checking: boolean } {
   useEffect(() => {
     let active = true;
 
-    fetch("/api/byok/status")
+    fetch(withBasePath("/api/byok/status"))
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { hasKey?: boolean } | null) => {
         if (!active) return;

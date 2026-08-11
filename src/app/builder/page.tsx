@@ -10,6 +10,7 @@ import ResumeOutput from "@/components/ResumeOutput";
 import CheckingKey from "@/components/CheckingKey";
 import { createClient } from "@/lib/supabase/client";
 import { useRequireKey } from "@/lib/useRequireKey";
+import { withBasePath } from "@/lib/basePath";
 import type { JobAnalysis, GeneratedResume, TemplateName } from "@/types";
 
 type Step = "job" | "profile" | "template" | "output";
@@ -130,7 +131,7 @@ export default function BuilderPage() {
         if (data?.role) setUserRole(data.role);
 
         setUserStatsLoading(true);
-        fetch("/api/user-stats")
+        fetch(withBasePath("/api/user-stats"))
           .then((r) => r.json())
           .then((data) => {
             if (!data.error) setUserStats(data);
@@ -146,7 +147,7 @@ export default function BuilderPage() {
     if (checking || userRole !== "admin") return;
 
     setTokenStatsLoading(true);
-    fetch("/api/token-stats")
+    fetch(withBasePath("/api/token-stats"))
       .then((r) => r.json())
       .then((data) => {
         if (!data.error) setTokenStats(data);
@@ -226,7 +227,7 @@ export default function BuilderPage() {
     setGenerationStatus("Starting resume generation...");
 
     try {
-      const response = await fetch("/api/generate-resume", {
+      const response = await fetch(withBasePath("/api/generate-resume"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -320,7 +321,7 @@ export default function BuilderPage() {
     setIsBoosting(true);
     setBoostError("");
     try {
-      const res = await fetch("/api/ats-boost", {
+      const res = await fetch(withBasePath("/api/ats-boost"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

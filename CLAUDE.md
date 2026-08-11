@@ -5,8 +5,8 @@ letter, job-fit scoring, and an application tracker, all run on an AI key you br
 **Stack:** Next.js 15, TypeScript, Tailwind CSS, Supabase (auth + Postgres), provider adapters for
 Gemini / Groq / OpenAI / Anthropic.
 **Design system:** "Paper", light, editorial, serif headings. Tokens in `tailwind.config.ts`.
-**Local URL:** http://localhost:3001
-**Live URL:** https://resume.aibizmy.com
+**Local URL:** http://localhost:3001/careersume
+**Live URL:** https://univa.my/careersume
 **GitHub:** repo to become `github.com/ahnafthaqeef/careersume` (currently a private path repo)
 
 ## How BYOK works
@@ -34,6 +34,7 @@ Gemini / Groq / OpenAI / Anthropic.
 - `src/lib/templates.ts`: resume template definitions
 - `src/lib/parse-resume-file.ts`: PDF/DOCX/TXT to text, in the browser (pdfjs-dist + mammoth,
   both lazily imported). Resume files are never uploaded; there is no server parsing endpoint
+- `src/lib/basePath.ts`: puts the `/careersume` prefix on URLs the app builds by hand
 - `src/types/index.ts`: shared TypeScript interfaces
 
 ## Environment
@@ -102,8 +103,27 @@ npm run deploy:cf  # build, assert the Worker is still lean, then deploy
 - Production secrets are set once with `wrangler secret put NEXT_PUBLIC_SUPABASE_URL`,
   and the same for `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
   `BYOK_ENCRYPTION_KEY`, and `JSEARCH_API_KEY` if the instance wants job search.
-- `resume.aibizmy.com` is on the aibizmy.com zone. The `routes` stanza in `wrangler.jsonc` is
-  commented out; uncomment it when the custom domain is attached at deploy time.
+- The app is served from **https://univa.my/careersume**, not its own hostname. The root of
+  univa.my belongs to the `univa-site` Cloudflare Pages project, so the `routes` stanza in
+  `wrangler.jsonc` claims `univa.my/careersume*` on the univa.my zone and nothing else. A custom
+  domain would take the whole hostname, which is why this is a route.
+
+## Served from a subpath
+`basePath: "/careersume"` in `next.config.ts` is the app-side half of that route, and it only
+reaches the navigation Next owns: `<Link href>`, `router.push`, and the next/image loader. It does
+**nothing** to a URL string the app builds itself, and the failure is silent, because an unprefixed
+`/api/...` resolves against univa.my's root, which is a different site. So:
+- Any hand-built internal URL goes through `withBasePath()` from `src/lib/basePath.ts`: every
+  `fetch("/api/...")`, the Supabase `redirectTo`/`emailRedirectTo` values, and `window.location`
+  assignments. The prefix reaches that module through `env` in `next.config.ts`, so the string is
+  written down once.
+- Middleware builds redirect targets with `request.nextUrl.clone()`, never
+  `new URL(path, request.url)`: `nextUrl` puts the prefix back when it stringifies, and resolving a
+  root-relative path against `request.url` drops it. `nextUrl.pathname` arrives with the prefix
+  already stripped, so `PROTECTED_PATHS` and the matcher both stay app-relative.
+- `redirect()` from `next/navigation` prefixes itself; those call sites need no help.
+- Paths stored in query params (`?redirectTo=`, `?next=`) stay app-relative so `safeRelativePath`
+  can keep validating them; the prefix goes on only where a real URL is built.
 
 ## Known Issues / Notes
 - `.next/` build cache can cause stale JS; delete it and restart if UI feels wrong

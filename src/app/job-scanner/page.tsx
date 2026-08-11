@@ -7,6 +7,7 @@ import AppNav from "@/components/AppNav";
 import CheckingKey from "@/components/CheckingKey";
 import { loadMasterProfile } from "@/lib/profile";
 import { useRequireKey } from "@/lib/useRequireKey";
+import { withBasePath } from "@/lib/basePath";
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
@@ -152,7 +153,7 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
   const handleSaveJob = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/job-tracker", {
+      const res = await fetch(withBasePath("/api/job-tracker"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -180,7 +181,7 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
     setAnalyzeError("");
     setAnalyzing(true);
 
-    fetch("/api/analyze-job", {
+    fetch(withBasePath("/api/analyze-job"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ jobText: job.fullDescription }),
@@ -435,7 +436,7 @@ export default function JobScannerPage() {
   // Auto-save job to tracker when user selects it
   useEffect(() => {
     if (!selectedJob) return;
-    fetch('/api/job-tracker', {
+    fetch(withBasePath('/api/job-tracker'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -480,7 +481,7 @@ export default function JobScannerPage() {
     setError("");
     try {
       const params = new URLSearchParams({ keywords: s.keywords, location: s.location, datePosted: s.datePosted, remote: s.remoteOnly ? "1" : "", page: "1" });
-      const res = await fetch(`/api/search-jobs?${params.toString()}`);
+      const res = await fetch(withBasePath(`/api/search-jobs?${params.toString()}`));
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Search failed");
       const newJobs = data.jobs || [];
@@ -508,7 +509,7 @@ export default function JobScannerPage() {
 
     try {
       const params = new URLSearchParams({ keywords, location, datePosted, remote: remoteOnly ? "1" : "", page: String(nextPage) });
-      const res = await fetch(`/api/search-jobs?${params.toString()}`);
+      const res = await fetch(withBasePath(`/api/search-jobs?${params.toString()}`));
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Search failed");
       const newJobs = data.jobs || [];

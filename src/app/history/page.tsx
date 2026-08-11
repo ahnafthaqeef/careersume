@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import { createClient } from "@/lib/supabase/client";
+import { withBasePath } from "@/lib/basePath";
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
@@ -265,7 +266,7 @@ export default function HistoryPage() {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) { router.push("/auth/login"); return; }
-      fetch("/api/history")
+      fetch(withBasePath("/api/history"))
         .then((r) => r.json())
         .then((data) => {
           if (data.error) setError(data.error);

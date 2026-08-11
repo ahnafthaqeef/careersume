@@ -15,14 +15,15 @@
 		"binding": "ASSETS"
 	},
 
-	// Routing is attached at deploy time, once the Cloudflare account is wired up.
-	// resume.aibizmy.com is on the aibizmy.com zone, so it goes on as a custom
-	// domain. Uncomment, then `npm run deploy:cf`:
-	//
-	// "routes": [
-	// 	{
-	// 		"pattern": "resume.aibizmy.com",
-	// 		"custom_domain": true
-	// 	}
-	// ]
+	// The root of univa.my is served by the `univa-site` Cloudflare Pages
+	// project; this route intercepts only /careersume* and leaves the rest of the
+	// zone to Pages. A route rather than a custom domain for that reason: a
+	// custom domain would claim the whole hostname. `basePath` in next.config.ts
+	// is the matching half, so the app's own URLs stay inside this prefix.
+	"routes": [
+		{
+			"pattern": "univa.my/careersume*",
+			"zone_name": "univa.my"
+		}
+	]
 }

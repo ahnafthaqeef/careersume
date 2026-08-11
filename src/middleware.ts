@@ -16,6 +16,9 @@ const PROTECTED_PATHS = [
 ]
 
 export async function middleware(request: NextRequest) {
+  // `nextUrl` splits the app's basePath off the pathname, so the list above
+  // stays app-relative and the matcher below needs no prefix either: Next puts
+  // basePath in front of both on its own.
   const { pathname } = request.nextUrl
 
   const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p))
@@ -57,14 +60,23 @@ export async function middleware(request: NextRequest) {
     // A failed auth check is treated as signed out.
   }
 
+  // Redirect targets are cloned off `nextUrl`, which puts the basePath back when
+  // it is stringified. `new URL('/auth/login', request.url)` would not: that
+  // request.url still carries the prefix in its path, and a root-relative path
+  // resolved against it lands at the domain root, outside the app entirely.
   if (isProtected && !user) {
-    const loginUrl = new URL('/auth/login', request.url)
+    const loginUrl = request.nextUrl.clone()
+    loginUrl.search = ''
+    loginUrl.pathname = '/auth/login'
     loginUrl.searchParams.set('redirectTo', pathname)
     return NextResponse.redirect(loginUrl)
   }
 
   if (isAuthPage && user) {
-    return NextResponse.redirect(new URL('/builder', request.url))
+    const builderUrl = request.nextUrl.clone()
+    builderUrl.search = ''
+    builderUrl.pathname = '/builder'
+    return NextResponse.redirect(builderUrl)
   }
 
   return response

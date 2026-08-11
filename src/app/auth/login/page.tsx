@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { safeRelativePath } from "@/lib/safeRedirect";
+import { withBasePath } from "@/lib/basePath";
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
@@ -35,7 +36,9 @@ export default function LoginPage() {
   const supabase = createClient();
 
   /** Where to land after signing in. The middleware puts the page you were
-   *  turned away from in `redirectTo`; without one, the builder is the product. */
+   *  turned away from in `redirectTo`; without one, the builder is the product.
+   *  This stays app-relative, the way `safeRelativePath` wants it; the basePath
+   *  goes on only where a real URL gets built. */
   const destination = () =>
     safeRelativePath(new URLSearchParams(window.location.search).get("redirectTo"), "/builder");
 
@@ -50,7 +53,7 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
-      window.location.href = destination();
+      window.location.href = withBasePath(destination());
     }
   };
 
@@ -60,7 +63,9 @@ export default function LoginPage() {
     const next = encodeURIComponent(destination());
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=${next}` },
+      options: {
+        redirectTo: `${window.location.origin}${withBasePath("/auth/callback")}?next=${next}`,
+      },
     });
   };
 

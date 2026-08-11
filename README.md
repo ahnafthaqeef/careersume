@@ -77,13 +77,15 @@ The order matters: the feedback policy and the resume log both reference tables 
 npm run dev
 ```
 
-The app comes up on [http://localhost:3001](http://localhost:3001). Register an account, connect an AI key at `/onboarding`, and you are running your own Careersume.
+The app comes up on [http://localhost:3001/careersume](http://localhost:3001/careersume). Register an account, connect an AI key at `/careersume/onboarding`, and you are running your own Careersume.
+
+The `/careersume` prefix is there because the hosted copy lives on a subpath of a larger site. If you are putting this at the root of your own domain, delete the `basePath` line from `next.config.ts` and the app moves to `/`; everything else follows automatically, because internal URLs are all built from that one setting.
 
 ### Deploying
 
 Any Node host will do: `npm run build`, then `npm start`.
 
-The first-class path is Cloudflare Workers, through the OpenNext adapter. `wrangler.jsonc` is in the repo with `nodejs_compat` already set, and `npm run deploy:cf` builds and ships in one step. Put production secrets in with `wrangler secret put NAME`, and keep local Workers-runtime secrets in `.dev.vars`, copied from `.dev.vars.example`. It fits the Workers free plan: the Worker is comfortably under the 3 MB compressed limit, resume files are parsed in the browser rather than on the server, and no request does enough work to trouble the free tier's CPU budget.
+The first-class path is Cloudflare Workers, through the OpenNext adapter. `wrangler.jsonc` is in the repo with `nodejs_compat` already set, and `npm run deploy:cf` builds and ships in one step. Its `routes` entry claims `univa.my/careersume*` and nothing else on that zone, which is the deployment `basePath` is set up for; point it at your own hostname, and drop `basePath` if you are serving from the root. Put production secrets in with `wrangler secret put NAME`, and keep local Workers-runtime secrets in `.dev.vars`, copied from `.dev.vars.example`. It fits the Workers free plan: the Worker is comfortably under the 3 MB compressed limit, resume files are parsed in the browser rather than on the server, and no request does enough work to trouble the free tier's CPU budget.
 
 ## Architecture
 

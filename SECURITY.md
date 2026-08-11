@@ -18,4 +18,4 @@ Two notes for self-hosters. `BYOK_ENCRYPTION_KEY` is the single secret protectin
 
 In scope: anything that exposes one user's key, profile, or documents to another user or to the client; authentication and session handling; row-level security gaps; injection into the AI prompts that leads to data access.
 
-Out of scope: findings against `resume.aibizmy.com` that require an account you do not control, denial of service by volume, missing hardening headers with no demonstrated impact, and vulnerabilities in third-party AI providers rather than in this code.
+Out of scope: findings against `univa.my/careersume` that require an account you do not control, denial of service by volume, missing hardening headers with no demonstrated impact, and vulnerabilities in third-party AI providers rather than in this code.

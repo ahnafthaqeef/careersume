@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { withBasePath } from '@/lib/basePath'
 
 type FeedbackType = 'bug' | 'idea' | 'other'
 
@@ -40,7 +41,7 @@ export function FeedbackWidget() {
     if (file) fd.append('screenshot', file)
 
     try {
-      await fetch('/api/feedback', { method: 'POST', body: fd })
+      await fetch(withBasePath('/api/feedback'), { method: 'POST', body: fd })
       setSuccess(true)
       setTimeout(() => {
         setSuccess(false)

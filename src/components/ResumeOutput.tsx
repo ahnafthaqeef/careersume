@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { GeneratedResume, TemplateName } from "@/types";
 import MatchScore from "./MatchScore";
 import { renderResumeHTML } from "@/lib/templates";
+import { withBasePath } from "@/lib/basePath";
 
 interface ResumeOutputProps {
   result: GeneratedResume;
@@ -95,7 +96,7 @@ export default function ResumeOutput({
     setCoverLetter("");
     setActiveTab("cover-letter");
     try {
-      const res = await fetch("/api/generate-cover-letter", {
+      const res = await fetch(withBasePath("/api/generate-cover-letter"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
