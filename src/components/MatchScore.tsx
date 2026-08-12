@@ -13,16 +13,17 @@ interface MatchScoreProps {
 }
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
-const PANEL = "rounded-md border border-line bg-paper p-4";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2";
+const PANEL = "rounded-md border border-line bg-ground p-4";
 const HEADING = "text-[15px] font-semibold text-ink";
-const CHIP = "rounded border px-1.5 py-0.5 text-[12px]";
 
-// Class strings are written out in full so Tailwind can see them.
+// Class strings are written out in full so Tailwind can see them. The tone colours are
+// data truth, which is why they survive the rebrand: the mark is identity and never
+// stands in for good, partial or missing.
 const TONES = {
-  good: { stroke: "stroke-accent", text: "text-accent", label: "Strong match" },
-  partial: { stroke: "stroke-score-partial", text: "text-score-partial", label: "Good match" },
-  missing: { stroke: "stroke-score-missing", text: "text-score-missing", label: "Needs work" },
+  good: { text: "text-good", label: "Strong match" },
+  partial: { text: "text-warn", label: "Good match" },
+  missing: { text: "text-bad", label: "Needs work" },
 };
 
 function toneFor(score: number) {
@@ -31,44 +32,17 @@ function toneFor(score: number) {
   return TONES.missing;
 }
 
-function ScoreRing({ score }: { score: number }) {
-  const size = 100;
-  const strokeWidth = 8;
-  const r = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * r;
-  const offset = circumference - (score / 100) * circumference;
+/** The number is the point, so it is set as big as the panel allows and carries the mark.
+ *  The verdict beside it keeps its semantic colour. */
+function ScoreFigure({ score }: { score: number }) {
   const tone = toneFor(score);
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90">
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r}
-            fill="none"
-            strokeWidth={strokeWidth}
-            className="stroke-line"
-          />
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r}
-            fill="none"
-            strokeWidth={strokeWidth}
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-            className={tone.stroke}
-            style={{ transition: "stroke-dashoffset 1s ease-in-out" }}
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className={`font-serif text-[28px] leading-none ${tone.text}`}>{score}%</span>
-        </div>
-      </div>
-      <span className={`mt-2 text-[13px] ${tone.text}`}>{tone.label}</span>
+    <div className="flex flex-col items-start">
+      <span className="mark font-display text-[56px] font-bold leading-none tabular-nums text-ink">
+        {score}%
+      </span>
+      <span className={`mt-3 text-[13px] ${tone.text}`}>{tone.label}</span>
     </div>
   );
 }
@@ -97,15 +71,15 @@ export default function MatchScore({
     <div className="space-y-5">
       {/* Score */}
       <div className={`flex items-center gap-5 ${PANEL}`}>
-        <ScoreRing score={score} />
+        <ScoreFigure score={score} />
         <div className="flex-1">
           <h3 className={HEADING}>ATS match score</h3>
           <p className="mt-1 text-[13px] leading-[20px] text-ink-3">
             How well your resume matches the job requirements.
           </p>
           <div className="mt-3 space-y-1 text-[13px]">
-            <p className="text-accent">{matchedSkills.length} skills matched</p>
-            <p className="text-score-missing">{missingSkills.length} skills missing</p>
+            <p className="text-good">{matchedSkills.length} skills matched</p>
+            <p className="text-bad">{missingSkills.length} skills missing</p>
           </div>
         </div>
       </div>
@@ -114,9 +88,10 @@ export default function MatchScore({
       {matchedSkills.length > 0 && (
         <div>
           <h4 className={HEADING}>Matched skills</h4>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          {/* What the resume already earns: the product's own highlighter, on the words. */}
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
             {matchedSkills.map((skill, i) => (
-              <span key={i} className={`${CHIP} border-accent/30 bg-accent/10 text-accent`}>
+              <span key={i} className="mark text-[12px] text-ink">
                 {skill}
               </span>
             ))}
@@ -128,12 +103,10 @@ export default function MatchScore({
       {missingSkills.length > 0 && (
         <div>
           <h4 className={HEADING}>Skills to develop</h4>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          {/* What is missing gets the semantic colour and nothing else: no fill, no chip. */}
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
             {missingSkills.map((skill, i) => (
-              <span
-                key={i}
-                className={`${CHIP} border-score-missing/30 bg-score-missing/5 text-score-missing`}
-              >
+              <span key={i} className="text-[12px] text-bad">
                 {skill}
               </span>
             ))}
@@ -147,8 +120,10 @@ export default function MatchScore({
           <h4 className={HEADING}>Suggestions</h4>
           <ol className="mt-2 space-y-2">
             {suggestions.map((suggestion, i) => (
-              <li key={i} className="flex gap-3 rounded-md border border-line bg-paper p-3">
-                <span className="font-serif text-[15px] leading-none text-ink-3">{i + 1}</span>
+              <li key={i} className="flex gap-3 rounded-md border border-line bg-ground p-3">
+                <span className="font-display text-[15px] font-bold leading-none tabular-nums text-ink-3">
+                  {i + 1}
+                </span>
                 <span className="text-[13px] leading-[20px] text-ink-2">{suggestion}</span>
               </li>
             ))}
@@ -164,7 +139,7 @@ export default function MatchScore({
             Numbers marked with ~ are estimates. Edit them before applying.
           </p>
           {visibleBullets.length === 0 ? (
-            <p className="mt-2 text-[13px] text-accent">All bullets reviewed.</p>
+            <p className="mt-2 text-[13px] text-good">All bullets reviewed.</p>
           ) : (
             <div className="mt-3 space-y-3">
               {weakBullets.map((item, i) => {
@@ -173,16 +148,16 @@ export default function MatchScore({
                 return (
                   <div key={i} className="overflow-hidden rounded-md border border-line">
                     {/* Original */}
-                    <div className="border-b border-line bg-score-missing/5 p-3">
+                    <div className="border-b border-line bg-ground-2 p-3">
                       <p className="text-[11px] text-ink-3">Current</p>
                       <p className="mt-1 text-[13px] leading-[20px] text-ink-2">{item.original}</p>
                     </div>
                     {/* Suggestion */}
-                    <div className="bg-paper p-3">
+                    <div className="bg-ground p-3">
                       <p className="text-[11px] text-ink-3">Suggested</p>
                       {isEditing ? (
                         <textarea
-                          className="mt-1 w-full resize-none rounded-md border border-line bg-surface p-2 text-[13px] leading-[20px] text-ink focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-paper"
+                          className="mt-1 w-full resize-none rounded-md border border-line bg-ground-2 p-2 text-[13px] leading-[20px] text-ink focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground"
                           rows={3}
                           value={editing[i]}
                           onChange={(e) =>
@@ -213,7 +188,7 @@ export default function MatchScore({
                         <button
                           type="button"
                           onClick={() => handleAccept(i, item.original)}
-                          className={`rounded-md bg-ink px-3 py-1.5 text-[13px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 ${FOCUS}`}
+                          className={`rounded-md bg-ink px-3 py-1.5 text-[13px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 ${FOCUS}`}
                         >
                           Apply to resume
                         </button>

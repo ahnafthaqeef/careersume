@@ -20,14 +20,14 @@ export default async function OnboardingPage({
   const destination = safeRelativePath(typeof next === "string" ? next : null, "/builder");
 
   return (
-    <main className="min-h-screen bg-paper px-6 py-14 md:py-20">
+    <main className="min-h-screen bg-ground-2 px-6 py-14 md:py-20">
       <div className="mx-auto max-w-xl">
         <h1 className="sr-only">Connect your AI key</h1>
         <Link
           href="/"
-          className="font-serif text-[22px] tracking-[-0.01em] text-ink transition-colors duration-200 hover:text-ink-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+          className="font-display text-[22px] font-bold leading-none tracking-[-0.02em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2"
         >
-          Careersume
+          Career<span className="mark">sume</span>
         </Link>
 
         <div className="mt-8">

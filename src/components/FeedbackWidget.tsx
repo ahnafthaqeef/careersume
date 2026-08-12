@@ -11,7 +11,7 @@ const TYPE_LABELS: Record<FeedbackType, string> = {
 }
 
 const FOCUS =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper'
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2'
 
 export function FeedbackWidget() {
   const [isOpen, setIsOpen] = useState(false)
@@ -57,14 +57,14 @@ export function FeedbackWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed bottom-6 right-6 z-50 rounded-full bg-ink px-4 py-2.5 text-[14px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 ${FOCUS}`}
+          className={`fixed bottom-6 right-6 z-50 rounded-full bg-ink px-4 py-2.5 text-[14px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 ${FOCUS}`}
         >
           Feedback
         </button>
       )}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-80 rounded-md border border-line bg-surface p-6 shadow-paper">
+        <div className="fixed bottom-6 right-6 z-50 w-80 rounded-md border border-line bg-ground p-6 shadow-sheet">
           <div className="mb-4 flex items-center justify-between">
             <span className="text-[15px] font-semibold text-ink">Send feedback</span>
             <button
@@ -88,7 +88,7 @@ export function FeedbackWidget() {
                     onClick={() => setType(t)}
                     className={`flex-1 rounded-md border py-2 text-[13px] font-semibold transition-colors duration-200 ${FOCUS} ${
                       type === t
-                        ? 'border-accent bg-accent/10 text-accent'
+                        ? 'border-ink text-ink'
                         : 'border-line text-ink-2 hover:border-ink'
                     }`}
                   >
@@ -103,7 +103,7 @@ export function FeedbackWidget() {
                 placeholder="Tell us what happened or what you would love to see..."
                 maxLength={2000}
                 required
-                className="mb-3 h-24 w-full resize-none rounded-md border border-line bg-paper px-3 py-2 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface"
+                className="mb-3 h-24 w-full resize-none rounded-md border border-line bg-ground-2 px-3 py-2 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground"
               />
 
               <label className="mb-3 flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-line px-3 py-2 text-[13px] text-ink-3 transition-colors duration-200 hover:border-ink">
@@ -120,7 +120,7 @@ export function FeedbackWidget() {
               <button
                 type="submit"
                 disabled={loading || !message.trim()}
-                className={`w-full rounded-md bg-ink py-2.5 text-[14px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`}
+                className={`w-full rounded-md bg-ink py-2.5 text-[14px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`}
               >
                 {loading ? 'Sending...' : 'Send feedback'}
               </button>

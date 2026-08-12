@@ -4,7 +4,10 @@
 letter, job-fit scoring, and an application tracker, all run on an AI key you bring and own.
 **Stack:** Next.js 15, TypeScript, Tailwind CSS, Supabase (auth + Postgres), provider adapters for
 Gemini / Groq / OpenAI / Anthropic.
-**Design system:** "Paper", light, editorial, serif headings. Tokens in `tailwind.config.ts`.
+**Design system:** "Highlight": Swiss grotesque on paper white, ink chrome, and one marker
+yellow used only as a highlighter stroke. Tokens in `tailwind.config.ts`, `globals.css`, and
+`src/lib/theme.ts`. Spec: `docs/superpowers/specs/2026-08-04-careersume-highlight-rebrand-design.md`
+in the EA repo. The device itself is `.mark` in `globals.css` plus `src/components/Mark.tsx`.
 **Local URL:** http://localhost:3001
 **Live URL:** https://resume.aibizmy.com
 **GitHub:** repo to become `github.com/ahnafthaqeef/careersume` (currently a private path repo)

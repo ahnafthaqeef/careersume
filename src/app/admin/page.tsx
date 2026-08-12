@@ -3,7 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { adminClient } from "@/lib/supabase/admin";
 
-const PANEL = "rounded-md border border-line bg-surface";
+const PANEL = "rounded-md border border-line bg-ground-2";
 const CAPTION = "text-[13px] text-ink-3";
 const SECTION_TITLE = "text-[15px] font-semibold text-ink";
 const TH = "px-4 py-3 text-center text-[13px] font-semibold text-ink-3";
@@ -154,13 +154,16 @@ export default async function AdminPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-ground">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-line bg-paper">
+      <header className="sticky top-0 z-50 border-b border-line bg-ground">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3">
           <div className="flex items-center gap-8">
-            <Link href="/" className="font-serif text-xl leading-none">
-              Careersume
+            <Link
+              href="/"
+              className="font-display text-xl font-bold leading-none tracking-[-0.02em] text-ink"
+            >
+              Career<span className="mark">sume</span>
             </Link>
             <span className="text-[14px] text-ink-2">Admin</span>
           </div>
@@ -182,7 +185,7 @@ export default async function AdminPage() {
           {stats.map(({ label, value }) => (
             <div key={label} className={`${PANEL} p-5`}>
               <p className={CAPTION}>{label}</p>
-              <p className="mt-1 font-serif text-[32px] leading-none text-ink">{value}</p>
+              <p className="mt-1 font-display font-bold text-[32px] leading-none tabular-nums text-ink">{value}</p>
             </div>
           ))}
         </div>
@@ -192,7 +195,7 @@ export default async function AdminPage() {
           {tokenStats.map(({ label, value }) => (
             <div key={label} className={`${PANEL} p-5`}>
               <p className={CAPTION}>{label}</p>
-              <p className="mt-1 font-serif text-[32px] leading-none text-ink">{value}</p>
+              <p className="mt-1 font-display font-bold text-[32px] leading-none tabular-nums text-ink">{value}</p>
               <p className={`mt-1 ${CAPTION}`}>Estimated from response size</p>
             </div>
           ))}
@@ -208,7 +211,7 @@ export default async function AdminPage() {
               {Object.entries(providerCounts).map(([provider, count]) => (
                 <div
                   key={provider}
-                  className="flex items-center gap-2 rounded-md border border-line bg-paper px-4 py-2"
+                  className="flex items-center gap-2 rounded-md border border-line bg-ground px-4 py-2"
                 >
                   <span className="text-[14px] font-medium capitalize text-ink">{provider}</span>
                   <span className={CAPTION}>{count}</span>
@@ -230,7 +233,7 @@ export default async function AdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-line bg-paper">
+                  <tr className="border-b border-line bg-ground">
                     <th className="px-6 py-3 text-left text-[13px] font-semibold text-ink-3">Email</th>
                     <th className={TH}>Today</th>
                     <th className={TH}>This week</th>
@@ -278,7 +281,7 @@ export default async function AdminPage() {
                     </div>
                     <div className="flex items-center gap-2 text-right">
                       {u.role === "admin" && (
-                        <span className="rounded border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[11px] text-accent">
+                        <span className="rounded border border-line px-1.5 py-0.5 text-[11px] text-ink-2">
                           admin
                         </span>
                       )}
@@ -321,7 +324,7 @@ export default async function AdminPage() {
 
         {/* Feedback Section */}
         <section>
-          <h2 className="font-serif text-[28px] leading-tight tracking-[-0.01em]">
+          <h2 className="font-display font-bold text-[28px] leading-tight tracking-[-0.02em]">
             User feedback{' '}
             <span className={CAPTION}>({feedbackItems?.length ?? 0})</span>
           </h2>
@@ -334,9 +337,9 @@ export default async function AdminPage() {
                   const email = (item.user_id ? feedbackEmailMap[item.user_id] : null) ?? 'unknown'
                   // Class strings are written out in full so Tailwind can see them.
                   const badgeColors: Record<string, string> = {
-                    bug: 'border-score-missing/30 bg-score-missing/5 text-score-missing',
-                    idea: 'border-accent/30 bg-accent/10 text-accent',
-                    other: 'border-line bg-paper text-ink-2',
+                    bug: 'border-bad/40 text-bad',
+                    idea: 'border-line text-ink',
+                    other: 'border-line text-ink-3',
                   }
                   return (
                     <div key={item.id} className="flex items-start gap-4 p-5">

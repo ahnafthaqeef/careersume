@@ -29,11 +29,11 @@ const TEMPLATE_OPTIONS: Array<{ id: TemplateName; label: string }> = [
 ];
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
-const PRIMARY = `rounded-md bg-ink px-4 py-2 text-[14px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2";
+const PRIMARY = `rounded-md bg-ink px-4 py-2 text-[14px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`;
 const GHOST = `rounded-md border border-line px-4 py-2 text-[14px] font-semibold text-ink transition-colors duration-200 hover:border-ink disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
 const CAPTION = "text-[13px] text-ink-3";
-const FRAME_HEADER = "flex items-center justify-between border-b border-line bg-paper px-4 py-2";
+const FRAME_HEADER = "flex items-center justify-between border-b border-line bg-ground px-4 py-2";
 
 type ActiveTab = "resume" | "cover-letter";
 
@@ -155,7 +155,7 @@ export default function ResumeOutput({
       {/* Header Actions */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-serif text-[28px] leading-tight tracking-[-0.01em]">
+          <h2 className="font-display font-bold text-[28px] leading-tight tracking-[-0.02em]">
             Your tailored resume
           </h2>
           <p className={`mt-1 ${CAPTION}`}>Written for {candidateName}</p>
@@ -168,7 +168,7 @@ export default function ResumeOutput({
             id="template-switch"
             value={template}
             onChange={(e) => onChangeTemplate(e.target.value as TemplateName)}
-            className={`cursor-pointer rounded-md border border-line bg-paper px-3 py-2 text-[14px] text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`}
+            className={`cursor-pointer rounded-md border border-line bg-ground px-3 py-2 text-[14px] text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`}
           >
             {TEMPLATE_OPTIONS.map(({ id, label }) => (
               <option key={id} value={id}>
@@ -249,9 +249,9 @@ export default function ResumeOutput({
               ].map(({ value, label }) => (
                 <div
                   key={label}
-                  className="rounded-md border border-line bg-paper p-3 text-center"
+                  className="rounded-md border border-line bg-ground p-3 text-center"
                 >
-                  <div className="font-serif text-[26px] leading-none text-ink">{value}</div>
+                  <div className="font-display font-bold text-[26px] leading-none tabular-nums text-ink">{value}</div>
                   <div className={`mt-1 ${CAPTION}`}>{label}</div>
                 </div>
               ))}
@@ -281,11 +281,11 @@ export default function ResumeOutput({
             <div className="overflow-hidden rounded-md border border-line">
               <div className={FRAME_HEADER}>
                 <span className={CAPTION}>Cover letter</span>
-                {clLoading && <span className="text-[13px] text-accent">Writing...</span>}
+                {clLoading && <span className="text-[13px] text-ink-3">Writing...</span>}
               </div>
 
               {/* Letter body, kept on white so it reads as the printed document */}
-              <div className="min-h-[500px] bg-surface p-8">
+              <div className="min-h-[500px] bg-ground-2 p-8">
                 {/* Header block */}
                 <div className="mb-8 border-b border-line pb-6">
                   <div className="text-[17px] font-semibold text-ink">{candidateName}</div>
@@ -306,7 +306,7 @@ export default function ResumeOutput({
                 </div>
 
                 {/* Letter text */}
-                <div className="whitespace-pre-wrap font-serif text-[15px] leading-[26px] text-ink">
+                <div className="whitespace-pre-wrap text-[15px] leading-[26px] text-ink">
                   {coverLetter ||
                     (clLoading ? (
                       <div className="space-y-3">
@@ -335,7 +335,7 @@ export default function ResumeOutput({
 
           {/* Sidebar - 1/3 */}
           <div className="space-y-4">
-            <div className="rounded-md border border-line bg-paper p-4">
+            <div className="rounded-md border border-line bg-ground p-4">
               <p className="text-[15px] font-semibold text-ink">Actions</p>
               <div className="mt-3 space-y-2">
                 <button
@@ -368,7 +368,7 @@ export default function ResumeOutput({
             </div>
 
             {/* Tips */}
-            <div className="rounded-md border border-line bg-paper p-4">
+            <div className="rounded-md border border-line bg-ground p-4">
               <p className="text-[15px] font-semibold text-ink">Tips</p>
               <ul className="mt-2 space-y-1.5 text-[13px] leading-[20px] text-ink-2">
                 <li>Personalise the opening with the hiring manager&apos;s name if you know it.</li>
@@ -378,7 +378,7 @@ export default function ResumeOutput({
               </ul>
             </div>
 
-            <div className="rounded-md border border-line bg-paper p-4 text-center">
+            <div className="rounded-md border border-line bg-ground p-4 text-center">
               <div className={CAPTION}>Applying for</div>
               <div className="mt-1 text-[15px] font-semibold text-ink">{jobTitle}</div>
               {companyName && <div className={`mt-0.5 ${CAPTION}`}>at {companyName}</div>}

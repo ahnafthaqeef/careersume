@@ -2,9 +2,9 @@
 
 Paste a job description, get a resume rewritten for that job. Free, open source, and it runs on an AI key you own.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-111110.svg)](LICENSE)
-[![Next.js 15](https://img.shields.io/badge/Next.js-15-111110.svg)](https://nextjs.org)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-0F7B5F.svg)](CONTRIBUTING.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-101010.svg)](LICENSE)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15-101010.svg)](https://nextjs.org)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-F2E438.svg?labelColor=101010)](CONTRIBUTING.md)
 
 ![The Careersume landing page](./docs/assets/landing.png)
 

@@ -43,7 +43,7 @@ If the UI looks stale or wrong after a branch switch, delete `.next/` and restar
 ## Code conventions
 
 - **TypeScript strict.** `strict` is on and `npx tsc --noEmit` must be clean. Avoid `any`; if you truly need an escape hatch, leave a comment saying why.
-- **Tailwind tokens only.** The "Paper" design system lives in `tailwind.config.ts` (`paper`, `surface`, `ink`, `line`, `accent`, `score`). Use those tokens. No raw hex values in app code. If a shade you need does not exist, add it to the config rather than inlining it.
+- **Tailwind tokens only.** The "Highlight" design system lives in `tailwind.config.ts` (`ground`, `ink`, `line`, `mark`, `good`/`warn`/`bad`), mirrored in `globals.css` and `src/lib/theme.ts`. Use those tokens. No raw hex values in app code. If a shade you need does not exist, add it to the config rather than inlining it. The marker yellow (`mark`) is the brand device and is rationed: keyword highlights, the active nav underline, the score chip, the wordmark, text selection, and at most one phrase per heading. Never a button fill, a border, or a panel background.
 - **No em dashes in user-facing copy.** House style. Use commas, colons, or a full stop. This applies to UI strings, docs, and error messages.
 - **Match the file you are in.** Naming, comment density, and import order should look like the code around them. There is no separate style guide to memorise.
 - **Server-only code stays server-only.** Anything touching `SUPABASE_SERVICE_ROLE_KEY`, `BYOK_ENCRYPTION_KEY`, or a decrypted user key runs in a route handler or a server module, never in a client component.

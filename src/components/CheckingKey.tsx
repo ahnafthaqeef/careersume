@@ -3,7 +3,7 @@
 // to be sent to the wizard.
 export default function CheckingKey() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-6">
+    <div className="flex min-h-screen items-center justify-center bg-ground px-6">
       <p className="text-[14px] text-ink-3">Checking your key...</p>
     </div>
   );

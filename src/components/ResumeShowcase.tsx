@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * The landing-page centerpiece: a real résumé document (DOM, not an image) running a
- * canned 8s tailoring loop. Keyword chips settle into the text, two bullets rewrite
+ * The landing-page centerpiece: a real resume document (DOM, not an image) running a
+ * canned 8s tailoring loop. Keyword marks settle into the text, two bullets rewrite
  * themselves, and the ATS chip ticks 68 to 94. No network, no API, all copy hardcoded.
  */
 
@@ -62,32 +62,59 @@ const KEYFRAMES = `
   52%, 88% { opacity: 1; }
   98%, 100% { opacity: 0; }
 }
+/* The marker stroke behind each keyword, swiping in on the same clock as the chip that
+   carries it. The stroke lives on .mark::before, which a utility class cannot reach, so
+   the swipe rides along here on the section moments csChip1-3 already use. */
+@keyframes csSwipe1 {
+  0%, 7% { transform: rotate(-0.4deg) scaleX(0); }
+  11%, 100% { transform: rotate(-0.4deg) scaleX(1); }
+}
+@keyframes csSwipe2 {
+  0%, 12% { transform: rotate(-0.4deg) scaleX(0); }
+  16%, 100% { transform: rotate(-0.4deg) scaleX(1); }
+}
+@keyframes csSwipe3 {
+  0%, 17% { transform: rotate(-0.4deg) scaleX(0); }
+  21%, 100% { transform: rotate(-0.4deg) scaleX(1); }
+}
+.cs-kw1::before { animation: csSwipe1 8s cubic-bezier(0.2, 0, 0, 1) infinite; }
+.cs-kw2::before { animation: csSwipe2 8s cubic-bezier(0.2, 0, 0, 1) infinite; }
+.cs-kw3::before { animation: csSwipe3 8s cubic-bezier(0.2, 0, 0, 1) infinite; }
+/* The rewritten line arrives highlighted, then the ink dries and the mark lifts. */
 @keyframes csSettle {
-  0%, 58% { color: var(--accent); }
-  70%, 100% { color: var(--ink-2); }
+  0%, 58% { background-color: var(--mark); }
+  70%, 100% { background-color: transparent; }
 }
 @keyframes csScore {
   0%, 82% { opacity: 1; }
   86% { opacity: 0.2; }
   92%, 100% { opacity: 1; }
 }
+@media (prefers-reduced-motion: reduce) {
+  .cs-kw1::before, .cs-kw2::before, .cs-kw3::before { animation: none; }
+}
 /* WCAG 2.2.2: the loop stops while it is hovered or holds focus. The score reads its phase
-   off the paused animation, so it freezes with everything else. */
+   off the paused animation, so it freezes with everything else. The ::before selectors catch
+   the .cs-kw*::before stroke animations, which the bare * combinator does not reach. */
 .cs-stage:hover *,
-.cs-stage:focus-within * {
+.cs-stage:hover *::before,
+.cs-stage:focus-within *,
+.cs-stage:focus-within *::before {
   animation-play-state: paused;
 }
 `;
 
 const KEYWORDS = [
-  { label: "weekly reporting", animation: "animate-[csChip1_8s_ease-out_infinite]" },
-  { label: "vendor reviews", animation: "animate-[csChip2_8s_ease-out_infinite]" },
-  { label: "SLA credits", animation: "animate-[csChip3_8s_ease-out_infinite]" },
+  { label: "weekly reporting", animation: "cs-kw1 animate-[csChip1_8s_ease-out_infinite]" },
+  { label: "vendor reviews", animation: "cs-kw2 animate-[csChip2_8s_ease-out_infinite]" },
+  { label: "SLA credits", animation: "cs-kw3 animate-[csChip3_8s_ease-out_infinite]" },
 ];
 
-const HEADING = "mb-1.5 border-b border-line pb-1 text-[10px] font-semibold text-ink sm:text-[11px]";
+const HEADING =
+  "mb-1.5 border-b border-line pb-1 text-[8.5px] font-semibold uppercase tracking-[0.12em] text-ink sm:text-[9.5px]";
 const BODY = "text-[9.5px] leading-[1.6] text-ink-2 sm:text-[10.5px]";
-const SETTLE = "animate-[csSettle_8s_ease-out_infinite] motion-reduce:animate-none";
+const SETTLE =
+  "rounded-sm px-[0.15em] box-decoration-clone animate-[csSettle_8s_ease-out_infinite] motion-reduce:animate-none";
 
 export default function ResumeShowcase() {
   const [score, setScore] = useState(68);
@@ -115,15 +142,15 @@ export default function ResumeShowcase() {
       <style>{KEYFRAMES}</style>
 
       <p className="sr-only">
-        Example: a résumé being tailored to a job posting, ATS match rising from 68 to 94
+        Example: a resume being tailored to a job posting, ATS match rising from 68 to 94
       </p>
 
-      <div className="mb-4 flex flex-wrap items-center gap-1.5 animate-[csRow_8s_ease-out_infinite] motion-reduce:animate-none">
+      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 animate-[csRow_8s_ease-out_infinite] motion-reduce:animate-none">
         <span className="text-[11px] text-ink-3">From the job posting</span>
         {KEYWORDS.map((keyword) => (
           <span
             key={keyword.label}
-            className={`rounded border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[11px] text-accent ${keyword.animation} motion-reduce:animate-none`}
+            className={`mark text-[11px] text-ink ${keyword.animation} motion-reduce:animate-none`}
           >
             {keyword.label}
           </span>
@@ -133,12 +160,15 @@ export default function ResumeShowcase() {
       <div className="relative">
         {/* The document is decoration: the sr-only caption above describes it, and its own
             headings would otherwise pollute the page outline. */}
+        {/* The 2px rule across the top is the sheet's letterhead: the Swiss grid made visible. */}
         <article
           aria-hidden="true"
-          className="aspect-[1/1.35] w-full rounded-md border border-line bg-surface p-6 shadow-paper sm:p-8"
+          className="aspect-[1/1.35] w-full border border-line border-t-2 border-t-line-strong bg-ground p-6 shadow-sheet sm:p-8"
         >
           <header className="border-b border-line pb-2.5">
-            <p className="font-serif text-lg leading-tight text-ink sm:text-xl">Amara Osei</p>
+            <p className="font-display text-lg font-bold leading-tight tracking-[-0.01em] text-ink sm:text-xl">
+              Amara Osei
+            </p>
             <p className="mt-0.5 text-[10px] text-ink-2 sm:text-[11px]">Operations Analyst</p>
             <div className="mt-1.5 flex justify-between gap-3 text-[9px] text-ink-3 sm:text-[10px]">
               <span>amara.osei@mail.com</span>
@@ -229,16 +259,13 @@ export default function ResumeShowcase() {
           </section>
         </article>
 
+        {/* Rule 3 of the mark: the score chip is the one chrome element that carries it. */}
         <div
           ref={chipRef}
-          className="absolute -right-3 -top-3 rounded-full border border-line bg-surface px-3 py-1 shadow-paper animate-[csScore_8s_ease-out_infinite] motion-reduce:animate-none"
+          className="absolute -right-3 top-6 rounded-sm bg-mark px-3 py-1.5 shadow-sheet animate-[csScore_8s_ease-out_infinite] motion-reduce:animate-none"
         >
-          <span className="text-[11px] text-ink-3">ATS match </span>
-          <span
-            className={`text-[11px] font-semibold tabular-nums ${score >= 85 ? "text-accent" : "text-ink-2"}`}
-          >
-            {score}
-          </span>
+          <span className="text-[11px] text-ink">ATS match </span>
+          <span className="font-display text-[13px] font-bold tabular-nums text-ink">{score}</span>
         </div>
       </div>
     </div>

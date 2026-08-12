@@ -6,13 +6,15 @@ import { createClient } from "@/lib/supabase/client";
 import { safeRelativePath } from "@/lib/safeRedirect";
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
-const PRIMARY = `w-full rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
+const PRIMARY = `w-full rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`;
 const GHOST = `flex w-full items-center justify-center gap-3 rounded-md border border-line px-5 py-3 text-[15px] font-semibold text-ink transition-colors duration-200 hover:border-ink disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
 const LABEL = "block text-[14px] text-ink-3";
 const INPUT =
-  "mt-1.5 w-full rounded-md border border-line bg-paper px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface";
-const TEXT_LINK = `text-accent underline underline-offset-4 decoration-accent/40 transition-colors duration-200 hover:decoration-accent ${FOCUS}`;
+  "mt-1.5 w-full rounded-md border border-line bg-ground-2 px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground";
+const TEXT_LINK = `text-ink underline underline-offset-4 decoration-ink/30 transition-colors duration-200 hover:decoration-ink ${FOCUS}`;
+/** The card is the sheet, and the 2px rule across its top is the letterhead. */
+const CARD = "mt-8 border border-line border-t-2 border-t-line-strong bg-ground p-6 shadow-sheet";
 
 /** Google's own mark, kept in its brand colours as their guidelines require. */
 function GoogleMark() {
@@ -65,21 +67,21 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-paper px-6 py-14">
+    <main className="flex min-h-screen items-center justify-center bg-ground-2 px-6 py-14">
       <div className="w-full max-w-sm">
         <h1 className="sr-only">Sign in to Careersume</h1>
 
         <div className="text-center">
           <Link
             href="/"
-            className={`font-serif text-[28px] leading-none tracking-[-0.01em] text-ink transition-colors duration-200 hover:text-ink-2 ${FOCUS}`}
+            className={`font-display text-[28px] font-bold leading-none tracking-[-0.02em] text-ink ${FOCUS}`}
           >
-            Careersume
+            Career<span className="mark">sume</span>
           </Link>
-          <p className="mt-2 text-[15px] text-ink-2">Sign in to your account</p>
+          <p className="mt-3 text-[15px] text-ink-2">Sign in to your account</p>
         </div>
 
-        <div className="mt-8 rounded-md border border-line bg-surface p-6 shadow-paper">
+        <div className={CARD}>
           <button type="button" onClick={handleGoogleLogin} disabled={loading} className={GHOST}>
             <GoogleMark />
             Continue with Google
@@ -95,7 +97,7 @@ export default function LoginPage() {
             {error && (
               <p
                 role="alert"
-                className="rounded-md border border-score-missing/30 bg-score-missing/5 px-3 py-2 text-[14px] text-score-missing"
+                className="border border-bad/40 px-3 py-2 text-[14px] text-bad"
               >
                 {error}
               </p>

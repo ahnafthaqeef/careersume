@@ -8,7 +8,7 @@ interface TemplateSelectorProps {
 }
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2";
 
 // Each preview is a miniature of the printed document, so it keeps that
 // template's own colours rather than the app palette.
@@ -310,7 +310,7 @@ export default function TemplateSelector({ selected, onSelect }: TemplateSelecto
             type="button"
             onClick={() => onSelect(template.id)}
             aria-pressed={isSelected}
-            className={`rounded-md border bg-paper p-4 text-left transition-colors duration-200 ${FOCUS} ${
+            className={`rounded-md border bg-ground p-4 text-left transition-colors duration-200 ${FOCUS} ${
               isSelected ? "border-ink" : "border-line hover:border-ink"
             }`}
           >
@@ -319,7 +319,7 @@ export default function TemplateSelector({ selected, onSelect }: TemplateSelecto
             <div className="flex items-center gap-2">
               <span className="text-[15px] font-semibold text-ink">{template.name}</span>
               {isSelected && (
-                <span className="rounded border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[11px] text-accent">
+                <span className="rounded border border-ink px-1.5 py-0.5 text-[11px] text-ink">
                   Selected
                 </span>
               )}
@@ -329,7 +329,7 @@ export default function TemplateSelector({ selected, onSelect }: TemplateSelecto
               {template.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded border border-line bg-surface px-1.5 py-0.5 text-[11px] text-ink-3"
+                  className="rounded border border-line bg-ground-2 px-1.5 py-0.5 text-[11px] text-ink-3"
                 >
                   {tag}
                 </span>

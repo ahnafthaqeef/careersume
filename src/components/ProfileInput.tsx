@@ -64,17 +64,17 @@ ACHIEVEMENTS
 - Published technical articles reaching 50K+ monthly readers on Medium`;
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2";
 const GHOST = `rounded-md border border-line px-3 py-2 text-[13px] font-semibold text-ink transition-colors duration-200 hover:border-ink disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
 const QUIET = `text-[13px] text-ink-3 underline underline-offset-4 transition-colors duration-200 hover:text-ink ${FOCUS}`;
 const INPUT =
-  "w-full rounded-md border border-line bg-paper px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface";
+  "w-full rounded-md border border-line bg-ground px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground-2";
 const CAPTION = "text-[13px] text-ink-3";
-const PANEL = "rounded-md border border-line bg-paper p-4";
+const PANEL = "rounded-md border border-line bg-ground p-4";
 
 function tabClass(isActive: boolean) {
   return `flex-1 py-2.5 px-4 text-[14px] font-medium transition-colors duration-200 ${FOCUS} ${
-    isActive ? "bg-ink text-paper" : "bg-surface text-ink-2 hover:text-ink"
+    isActive ? "bg-ink text-ground" : "bg-ground-2 text-ink-2 hover:text-ink"
   }`;
 }
 
@@ -242,7 +242,7 @@ export default function ProfileInput({
                 <button
                   type="button"
                   onClick={handleRemovePicture}
-                  className={`rounded-md border border-line px-3 py-2 text-[13px] font-semibold text-score-missing transition-colors duration-200 hover:border-score-missing ${FOCUS}`}
+                  className={`rounded-md border border-line px-3 py-2 text-[13px] font-semibold text-bad transition-colors duration-200 hover:border-bad ${FOCUS}`}
                 >
                   Remove
                 </button>
@@ -262,11 +262,11 @@ export default function ProfileInput({
               >
                 <span
                   className={`relative h-5 w-10 flex-none rounded-full transition-colors duration-200 ${
-                    includePhoto ? "bg-accent" : "bg-ink-3"
+                    includePhoto ? "bg-ink" : "bg-ink-3"
                   }`}
                 >
                   <span
-                    className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-surface transition-transform duration-200"
+                    className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-ground-2 transition-transform duration-200"
                     style={{ transform: includePhoto ? "translateX(20px)" : "translateX(0)" }}
                   />
                 </span>
@@ -400,7 +400,7 @@ Certifications and achievements`}
       {error && (
         <p
           role="alert"
-          className="rounded-md border border-score-missing/30 bg-score-missing/5 px-3 py-2 text-[14px] text-score-missing"
+          className="rounded-md border border-bad/30 bg-bad/5 px-3 py-2 text-[14px] text-bad"
         >
           {error}
         </p>
@@ -408,7 +408,7 @@ Certifications and achievements`}
 
       {/* Profile Status */}
       {profileText.trim().length > 200 && mode === "manual" && (
-        <p className="text-[14px] text-accent">
+        <p className="text-[14px] text-good">
           Profile ready ({profileText.split("\n").length} lines)
           {savedProfile === profileText && ", saved as your master profile"}
         </p>

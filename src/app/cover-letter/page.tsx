@@ -9,14 +9,14 @@ import { loadMasterProfile } from "@/lib/profile";
 import { useRequireKey } from "@/lib/useRequireKey";
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
-const PRIMARY = `rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
-const GHOST = `inline-flex min-h-[44px] items-center rounded-md border border-line bg-surface px-3 text-[13px] font-semibold text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
+const PRIMARY = `rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`;
+const GHOST = `inline-flex min-h-[44px] items-center rounded-md border border-line bg-ground-2 px-3 text-[13px] font-semibold text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`;
 const INPUT =
-  "w-full rounded-md border border-line bg-paper px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface";
+  "w-full rounded-md border border-line bg-ground px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground-2";
 const LABEL = "block text-[13px] text-ink-3";
 const CAPTION = "text-[13px] text-ink-3";
-const PANEL = "rounded-md border border-line bg-surface p-5";
+const PANEL = "rounded-md border border-line bg-ground-2 p-5";
 
 export default function CoverLetterPage() {
   const router = useRouter();
@@ -113,7 +113,7 @@ export default function CoverLetterPage() {
   if (checking) return <CheckingKey />;
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-ground">
       <AppNav
         active="/cover-letter"
         right={
@@ -125,7 +125,7 @@ export default function CoverLetterPage() {
 
       <div className="mx-auto max-w-screen-xl px-4 py-8">
         <div className="mb-8">
-          <h1 className="font-serif text-[clamp(2rem,4vw,2.75rem)] leading-[1.1] tracking-[-0.01em]">
+          <h1 className="font-display font-bold text-[clamp(2rem,4vw,2.75rem)] leading-[1.1] tracking-[-0.02em]">
             Cover letter
           </h1>
           <p className="mt-2 text-[17px] leading-[28px] text-ink-2">
@@ -182,7 +182,7 @@ export default function CoverLetterPage() {
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-[15px] font-semibold text-ink">Your profile</h2>
                 {hasProfile && (
-                  <span className="rounded border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[11px] text-accent">
+                  <span className="rounded border border-line px-1.5 py-0.5 text-[11px] text-ink-2">
                     Loaded from your master profile
                   </span>
                 )}
@@ -192,7 +192,7 @@ export default function CoverLetterPage() {
                   No profile saved yet.{" "}
                   <Link
                     href="/builder"
-                    className="text-accent underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
+                    className="text-ink underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
                   >
                     Go to the resume builder
                   </Link>{" "}
@@ -214,7 +214,7 @@ export default function CoverLetterPage() {
             {error && (
               <p
                 role="alert"
-                className="rounded-md border border-score-missing/30 bg-score-missing/5 p-3 text-[14px] text-score-missing"
+                className="rounded-md border border-bad/30 bg-bad/5 p-3 text-[14px] text-bad"
               >
                 {error}
               </p>
@@ -231,16 +231,16 @@ export default function CoverLetterPage() {
 
           {/* Right: output */}
           <div
-            className="flex flex-col overflow-hidden rounded-md border border-line bg-surface"
+            className="flex flex-col overflow-hidden rounded-md border border-line bg-ground-2"
             style={{ minHeight: "500px" }}
           >
             {/* Output header */}
-            <div className="flex items-center justify-between border-b border-line bg-paper px-5 py-3">
+            <div className="flex items-center justify-between border-b border-line bg-ground px-5 py-3">
               <span className="text-[15px] font-semibold text-ink">Cover letter</span>
               {output && (
                 <button
                   onClick={copyToClipboard}
-                  className={`${GHOST} ${copied ? "border-accent text-accent" : ""}`}
+                  className={`${GHOST} ${copied ? "border-line-strong text-ink" : ""}`}
                 >
                   {copied ? "Copied" : "Copy"}
                 </button>
@@ -262,7 +262,7 @@ export default function CoverLetterPage() {
               )}
 
               {(output || streaming) && (
-                <div className="whitespace-pre-wrap font-serif text-[15px] leading-[26px] text-ink">
+                <div className="whitespace-pre-wrap text-[15px] leading-[26px] text-ink">
                   {output}
                   {streaming && (
                     <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-ink align-middle" />

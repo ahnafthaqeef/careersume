@@ -7,7 +7,7 @@ import AppNav from "@/components/AppNav";
 import { createClient } from "@/lib/supabase/client";
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
 const QUIET = `inline-flex min-h-[44px] items-center rounded px-2 text-[13px] text-ink-2 transition-colors duration-200 hover:text-ink ${FOCUS}`;
 const CAPTION = "text-[13px] text-ink-3";
 
@@ -61,7 +61,7 @@ export default function DashboardPage() {
   const displayName = userName || userEmail?.split("@")[0] || "there";
 
   return (
-    <div className="flex min-h-screen flex-col bg-paper">
+    <div className="flex min-h-screen flex-col bg-ground">
       <AppNav
         container="max-w-5xl"
         right={
@@ -80,7 +80,7 @@ export default function DashboardPage() {
 
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-14 md:py-20">
         <div className="animate-fade-in">
-          <h1 className="font-serif text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.05] tracking-[-0.01em]">
+          <h1 className="font-display font-bold text-[clamp(2.25rem,4vw,3.25rem)] leading-[1.05] tracking-[-0.02em]">
             Welcome back, {displayName}.
           </h1>
           <p className="mt-4 text-[17px] leading-[28px] text-ink-2">
@@ -93,7 +93,7 @@ export default function DashboardPage() {
             <Link
               key={card.href}
               href={card.href}
-              className={`flex h-full flex-col rounded-md border border-line bg-surface p-6 transition-colors duration-200 hover:border-ink ${FOCUS}`}
+              className={`flex h-full flex-col rounded-md border border-line bg-ground-2 p-6 transition-colors duration-200 hover:border-ink ${FOCUS}`}
             >
               <h2 className="text-[17px] font-semibold text-ink">{card.title}</h2>
               <p className="mt-2 text-[15px] leading-[24px] text-ink-2">{card.description}</p>

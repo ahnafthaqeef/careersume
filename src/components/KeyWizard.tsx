@@ -7,13 +7,16 @@ import type { ProviderCard, ProviderId } from "@/lib/providers";
 type Step = "provider" | "instructions" | "paste" | "done";
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
-const PRIMARY = `inline-flex items-center justify-center rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
+const PRIMARY = `inline-flex items-center justify-center rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`;
 const GHOST = `inline-flex items-center justify-center rounded-md border border-line px-5 py-3 text-[15px] font-semibold text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`;
 const QUIET = `text-[14px] text-ink-3 underline underline-offset-4 transition-colors duration-200 hover:text-ink ${FOCUS}`;
-const HEADING = "font-serif text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.1] tracking-[-0.01em]";
+const HEADING =
+  "font-display text-[clamp(1.75rem,3vw,2.5rem)] font-bold leading-[1.1] tracking-[-0.02em]";
 const BODY = "text-[17px] leading-[28px] text-ink-2";
-const PANEL = "rounded-md border border-line bg-surface p-6 shadow-paper md:p-8";
+/** Same sheet as the auth card: hairline box under a 2px letterhead rule. */
+const PANEL =
+  "border border-line border-t-2 border-t-line-strong bg-ground p-6 shadow-sheet md:p-8";
 
 const REJECTED = "That key was rejected. Check you copied all of it, then try again.";
 const UNREACHABLE = "The provider could not be reached. Your key was not changed. Try again in a minute.";
@@ -207,7 +210,9 @@ export default function KeyWizard({
         {connected ? (
           <>
             <p className="text-[14px] text-ink-3">Connected key</p>
-            <p className="mt-1 font-serif text-[28px] leading-tight">{card(connected).label}</p>
+            <p className="mt-1 font-display text-[28px] font-bold leading-tight tracking-[-0.02em]">
+              {card(connected).label}
+            </p>
             <p className={`mt-3 ${BODY}`}>
               {confirmRemove
                 ? "Remove this key? Tailoring stops working until you connect another one, and nothing else in your account changes."
@@ -215,7 +220,7 @@ export default function KeyWizard({
             </p>
 
             {error && (
-              <p role="alert" className="mt-3 text-[14px] text-score-missing">
+              <p role="alert" className="mt-3 text-[14px] text-bad">
                 {error}
               </p>
             )}
@@ -271,7 +276,22 @@ export default function KeyWizard({
   return (
     <div className="animate-fade-in">
       {step !== "done" && (
-        <p className="mb-3 text-[14px] text-ink-3">Step {STEP_NUMBER[step]} of 3</p>
+        <>
+          <p className="sr-only">Step {STEP_NUMBER[step]} of 3</p>
+          {/* The numerals carry the progress; only the one you are on takes the mark. */}
+          <div aria-hidden className="mb-4 flex items-baseline gap-4">
+            {[1, 2, 3].map((n) => (
+              <span
+                key={n}
+                className={`font-display text-[26px] font-bold leading-none tabular-nums ${
+                  STEP_NUMBER[step] === n ? "mark text-ink" : "text-ink-2"
+                }`}
+              >
+                {`0${n}`}
+              </span>
+            ))}
+          </div>
+        </>
       )}
 
       <div className={PANEL}>
@@ -293,12 +313,12 @@ export default function KeyWizard({
                     setError("");
                     setStep("instructions");
                   }}
-                  className={`block w-full rounded-md border border-line bg-paper p-4 text-left transition-colors duration-200 hover:border-ink ${FOCUS}`}
+                  className={`block w-full border border-line p-4 text-left transition-colors duration-200 hover:border-ink ${FOCUS}`}
                 >
                   <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
                     <span className="text-[16px] font-semibold text-ink">{p.label}</span>
                     {p.freeKey && (
-                      <span className="rounded border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[11px] text-accent">
+                      <span className="border border-line px-1.5 py-0.5 text-[11px] text-ink-2">
                         {BADGE[p.id] ?? "Free"}
                       </span>
                     )}
@@ -318,7 +338,7 @@ export default function KeyWizard({
             <ol className="mt-6 space-y-4">
               {INSTRUCTIONS[providerId].map((text, i) => (
                 <li key={text} className="flex gap-3">
-                  <span className="flex h-7 w-7 flex-none items-center justify-center rounded-full border border-line text-[13px] font-semibold text-ink-2">
+                  <span className="flex h-7 w-7 flex-none items-center justify-center border border-line font-display text-[13px] font-bold tabular-nums text-ink-2">
                     {i + 1}
                   </span>
                   <span className={BODY}>{text}</span>
@@ -368,7 +388,7 @@ export default function KeyWizard({
                 placeholder={PLACEHOLDER[providerId]}
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full rounded-md border border-line bg-paper px-3 py-2.5 font-mono text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface"
+                className="w-full rounded-md border border-line bg-ground-2 px-3 py-2.5 font-mono text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground"
               />
               <button
                 type="button"
@@ -380,7 +400,7 @@ export default function KeyWizard({
             </div>
 
             {error && (
-              <p role="alert" className="mt-3 text-[14px] text-score-missing">
+              <p role="alert" className="mt-3 text-[14px] text-bad">
                 {error}
               </p>
             )}

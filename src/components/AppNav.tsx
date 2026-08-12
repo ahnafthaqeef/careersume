@@ -16,12 +16,14 @@ const LINKS = [
 const ACCOUNT = { href: "/account/byok", label: "Account" };
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
 /** No display utility of its own, so the caller can decide when it shows. */
 const QUIET = `min-h-[44px] items-center rounded px-2 text-[13px] text-ink-2 transition-colors duration-200 hover:text-ink ${FOCUS}`;
 
+/** The mark underline reads off aria-current, so the brand state and the accessible
+ *  state can never drift apart. Styling is `.nav-link` in globals.css. */
 function linkClass(isActive: boolean) {
-  return `whitespace-nowrap rounded text-[14px] transition-colors duration-200 ${FOCUS} ${
+  return `nav-link whitespace-nowrap text-[14px] transition-colors duration-200 ${FOCUS} ${
     isActive ? "font-semibold text-ink" : "text-ink-2 hover:text-ink"
   }`;
 }
@@ -39,11 +41,14 @@ export default function AppNav({
   container?: string;
 }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-paper">
+    <header className="sticky top-0 z-50 border-b border-line bg-ground">
       <div className={`mx-auto flex ${container} items-center justify-between gap-6 px-4 py-3`}>
         <div className="flex items-center gap-8">
-          <Link href="/" className={`font-serif text-xl leading-none ${FOCUS}`}>
-            Careersume
+          <Link
+            href="/"
+            className={`font-display text-xl font-bold leading-none tracking-[-0.02em] text-ink ${FOCUS}`}
+          >
+            Career<span className="mark">sume</span>
           </Link>
           <nav className="hidden items-center gap-6 lg:flex">
             {LINKS.map((link) => (

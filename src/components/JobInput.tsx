@@ -12,17 +12,17 @@ interface JobInputProps {
 }
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
-const PRIMARY = `w-full rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2";
+const PRIMARY = `w-full rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`;
 const GHOST = `rounded-md border border-line px-4 py-2.5 text-[14px] font-semibold text-ink transition-colors duration-200 hover:border-ink disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
 const INPUT =
-  "w-full rounded-md border border-line bg-paper px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface";
+  "w-full rounded-md border border-line bg-ground px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground-2";
 const CAPTION = "text-[13px] text-ink-3";
 const CHIP = "rounded border px-1.5 py-0.5 text-[12px]";
 
 function tabClass(isActive: boolean) {
   return `flex-1 py-2.5 px-4 text-[14px] font-medium transition-colors duration-200 ${FOCUS} ${
-    isActive ? "bg-ink text-paper" : "bg-surface text-ink-2 hover:text-ink"
+    isActive ? "bg-ink text-ground" : "bg-ground-2 text-ink-2 hover:text-ink"
   }`;
 }
 
@@ -155,7 +155,7 @@ export default function JobInput({
   return (
     <div className="space-y-4">
       {initialSource && (
-        <p className="rounded-md border border-line bg-paper px-3 py-2 text-[13px] text-ink-2">
+        <p className="rounded-md border border-line bg-ground px-3 py-2 text-[13px] text-ink-2">
           Pre-filled from the job scanner: <span className="text-ink">{initialSource}</span>
         </p>
       )}
@@ -215,7 +215,7 @@ export default function JobInput({
       {error && (
         <p
           role="alert"
-          className="rounded-md border border-score-missing/30 bg-score-missing/5 px-3 py-2 text-[14px] text-score-missing"
+          className="rounded-md border border-bad/30 bg-bad/5 px-3 py-2 text-[14px] text-bad"
         >
           {error}
         </p>
@@ -235,8 +235,8 @@ export default function JobInput({
 
       {/* Analysis Results */}
       {analysis && (
-        <div className="animate-fade-in space-y-3 rounded-md border border-line bg-paper p-4">
-          <h3 className="text-[15px] font-semibold text-accent">Job analyzed</h3>
+        <div className="animate-fade-in space-y-3 rounded-md border border-line bg-ground p-4">
+          <h3 className="text-[15px] font-semibold text-good">Job analyzed</h3>
 
           <dl className="grid grid-cols-2 gap-3 text-[14px]">
             <div>
@@ -258,9 +258,11 @@ export default function JobInput({
           {analysis.requiredSkills.length > 0 && (
             <div>
               <p className={CAPTION}>Required skills</p>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {/* No match state exists at this stage (analysis only, no profile yet), so
+                  these are plain chips, not marks. */}
+              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
                 {analysis.requiredSkills.map((skill, i) => (
-                  <span key={i} className={`${CHIP} border-accent/30 bg-accent/10 text-accent`}>
+                  <span key={i} className={`${CHIP} border-line bg-ground-2 text-ink-2`}>
                     {skill}
                   </span>
                 ))}
@@ -273,7 +275,7 @@ export default function JobInput({
               <p className={CAPTION}>Preferred skills</p>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {analysis.preferredSkills.map((skill, i) => (
-                  <span key={i} className={`${CHIP} border-line bg-surface text-ink-2`}>
+                  <span key={i} className={`${CHIP} border-line bg-ground-2 text-ink-2`}>
                     {skill}
                   </span>
                 ))}
@@ -286,7 +288,7 @@ export default function JobInput({
               <p className={CAPTION}>Tools and technologies</p>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {analysis.tools.map((tool, i) => (
-                  <span key={i} className={`${CHIP} border-line bg-surface text-ink-2`}>
+                  <span key={i} className={`${CHIP} border-line bg-ground-2 text-ink-2`}>
                     {tool}
                   </span>
                 ))}

@@ -3,16 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --paper: #FAFAF7;
-  --surface: #FFFFFF;
-  --ink: #111110;
-  --ink-2: #52524E;
-  --ink-3: #6E6E68;
-  --line: #E4E4DE;
-  --accent: #0F7B5F;
-  --on-accent: #FAFAF7;
-  --score-partial: #B45309;
-  --score-missing: #B91C1C;
+  --ground: #FFFFFF;
+  --ground-2: #F6F6F3;
+  --ink: #101010;
+  --ink-2: #4A4A46;
+  --ink-3: #6B6B66;
+  --line: #E6E6E1;
+  --line-strong: #101010;
+  --mark: #F2E438;
+  --good: #1B7F4D;
+  --warn: #B45309;
+  --bad: #B91C1C;
+
+  /* The motion signature: everything the mark does, it does with this. */
+  --swipe: 150ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 @layer base {
@@ -23,13 +27,79 @@
   }
 
   body {
-    background: var(--paper);
+    background: var(--ground);
     color: var(--ink);
     @apply antialiased;
   }
 
   * {
     @apply box-border;
+  }
+
+  ::selection {
+    background: var(--mark);
+    color: var(--ink);
+  }
+}
+
+/* The device. One fluorescent stroke, laid behind the text rather than around it, so the
+   words stay on the baseline and the marker is what sits slightly askew. The padding is
+   bleed on the background layer, which keeps the glyphs from shifting when the stroke
+   arrives. `line-height: 1` pins the box to the em, so the stroke keeps the same
+   proportion at 11px in a keyword row and at 88px in the hero. */
+.mark {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  isolation: isolate;
+}
+.mark::before {
+  content: "";
+  position: absolute;
+  inset: 0.09em -0.15em 0.06em;
+  z-index: -1;
+  border-radius: 0.125rem;
+  background: var(--mark);
+  transform: rotate(-0.4deg);
+  transform-origin: left center;
+}
+
+/* Reveal: the stroke swipes in once, the first time it is scrolled into view. */
+.mark-swipe::before {
+  transform: rotate(-0.4deg) scaleX(0);
+  transition: transform var(--swipe);
+}
+.mark-swipe[data-revealed="true"]::before {
+  transform: rotate(-0.4deg) scaleX(1);
+}
+
+/* The active or hovered nav item, underlined by the same stroke. CSS only. */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -6px 0;
+  height: 2px;
+  background: var(--mark);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--swipe);
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark-swipe::before {
+    transform: rotate(-0.4deg);
+    transition: none;
+  }
+  .nav-link::after {
+    transition: none;
   }
 }
 
@@ -41,7 +111,7 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--paper);
+  background: var(--ground);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--line);

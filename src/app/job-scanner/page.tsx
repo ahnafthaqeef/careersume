@@ -9,15 +9,19 @@ import { loadMasterProfile } from "@/lib/profile";
 import { useRequireKey } from "@/lib/useRequireKey";
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
-const PRIMARY = `inline-flex min-h-[44px] items-center justify-center rounded-md bg-ink px-5 text-[14px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
-const GHOST = `inline-flex min-h-[44px] items-center justify-center rounded-md border border-line bg-surface px-4 text-[14px] font-semibold text-ink transition-colors duration-200 hover:border-ink disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
+const PRIMARY = `inline-flex min-h-[44px] items-center justify-center rounded-md bg-ink px-5 text-[14px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`;
+const GHOST = `inline-flex min-h-[44px] items-center justify-center rounded-md border border-line bg-ground-2 px-4 text-[14px] font-semibold text-ink transition-colors duration-200 hover:border-ink disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
 const INPUT =
-  "w-full rounded-md border border-line bg-paper px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface";
+  "w-full rounded-md border border-line bg-ground px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-ground-2";
 const CAPTION = "text-[13px] text-ink-3";
 const CHIP = "rounded border px-2 py-0.5 text-[12px]";
-const CHIP_LINE = `${CHIP} border-line bg-paper text-ink-2`;
-const CHIP_ACCENT = `${CHIP} border-accent/30 bg-accent/10 text-accent`;
+const CHIP_LINE = `${CHIP} border-line bg-ground text-ink-2`;
+/** A plain attribute of the posting, worth noticing but not a match. */
+const CHIP_STRONG = `${CHIP} border-ink text-ink`;
+/** Keywords the posting cares about, and the ones your resume already answers: the
+ *  product's own highlighter, exactly as the landing page demonstrates it. */
+const CHIP_MARK = "mark text-[12px] text-ink";
 const SECTION_LABEL = "text-[13px] font-semibold text-ink";
 
 interface Job {
@@ -72,13 +76,13 @@ function CompanyMark({ job, size }: { job: Job; size: "sm" | "lg" }) {
       <img
         src={job.companyLogo}
         alt={job.company}
-        className={`${box} flex-none rounded border border-line bg-surface object-contain`}
+        className={`${box} flex-none rounded border border-line bg-ground-2 object-contain`}
       />
     );
   }
   return (
     <div
-      className={`${box} flex flex-none items-center justify-center rounded border border-line bg-paper font-serif text-lg text-ink`}
+      className={`${box} flex flex-none items-center justify-center rounded border border-line bg-ground font-display font-bold text-lg text-ink`}
     >
       {job.company.charAt(0)}
     </div>
@@ -89,7 +93,7 @@ function JobCard({ job, isSelected, onClick }: { job: Job; isSelected: boolean; 
   return (
     <button
       onClick={onClick}
-      className={`w-full rounded-md border bg-surface p-4 text-left transition-colors duration-200 ${FOCUS} ${
+      className={`w-full rounded-md border bg-ground-2 p-4 text-left transition-colors duration-200 ${FOCUS} ${
         isSelected ? "border-ink" : "border-line hover:border-ink"
       }`}
     >
@@ -99,7 +103,7 @@ function JobCard({ job, isSelected, onClick }: { job: Job; isSelected: boolean; 
           <p className="truncate text-[14px] font-semibold leading-tight text-ink">{job.title}</p>
           <p className={`mt-0.5 truncate ${CAPTION}`}>{job.company}</p>
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {job.isRemote && <span className={CHIP_ACCENT}>Remote</span>}
+            {job.isRemote && <span className={CHIP_STRONG}>Remote</span>}
             {job.locations.slice(0, 1).map((loc) => (
               <span key={loc} className={CHIP_LINE}>{loc}</span>
             ))}
@@ -132,8 +136,8 @@ function computeMatch(analysis: JobAnalysis, profileText: string): MatchResult {
 
 // Class strings are written out in full so Tailwind can see them.
 function matchTone(score: number) {
-  if (score >= 75) return { text: "text-accent", bar: "bg-accent" };
-  if (score >= 50) return { text: "text-score-partial", bar: "bg-score-partial" };
+  if (score >= 75) return { text: "text-good", bar: "bg-good" };
+  if (score >= 50) return { text: "text-warn", bar: "bg-warn" };
   return { text: "text-ink-2", bar: "bg-ink-3" };
 }
 
@@ -203,16 +207,16 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
   }, [job.id]);
 
   return (
-    <div className="flex h-full flex-col bg-surface">
+    <div className="flex h-full flex-col bg-ground-2">
       {/* Header */}
       <div className="border-b border-line p-6">
         <div className="flex items-start gap-4">
           <CompanyMark job={job} size="lg" />
           <div className="min-w-0 flex-1">
-            <h2 className="font-serif text-[24px] leading-tight tracking-[-0.01em]">{job.title}</h2>
+            <h2 className="font-display font-bold text-[24px] leading-tight tracking-[-0.02em]">{job.title}</h2>
             <p className="mt-1 text-[14px] text-ink-2">{job.company}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {job.isRemote && <span className={CHIP_ACCENT}>Remote</span>}
+              {job.isRemote && <span className={CHIP_STRONG}>Remote</span>}
               {job.locations.map((loc) => (
                 <span key={loc} className={CHIP_LINE}>{loc}</span>
               ))}
@@ -228,14 +232,14 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
         {match && (() => {
           const tone = matchTone(match.score);
           return (
-            <div className="mt-4 flex items-center gap-4 rounded-md border border-line bg-paper px-4 py-3">
-              <span className={`font-serif text-[28px] leading-none ${tone.text}`}>
+            <div className="mt-4 flex items-center gap-4 rounded-md border border-line bg-ground px-4 py-3">
+              <span className={`font-display font-bold text-[28px] leading-none tabular-nums ${tone.text}`}>
                 {match.score}%
               </span>
               <div className="min-w-0 flex-1">
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-line">
+                <div className="h-1 w-full overflow-hidden bg-line">
                   <div
-                    className={`h-full rounded-full transition-all ${tone.bar}`}
+                    className={`h-full transition-all ${tone.bar}`}
                     style={{ width: `${match.score}%` }}
                   />
                 </div>
@@ -268,7 +272,7 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
           <button
             onClick={handleSaveJob}
             disabled={saving || saved}
-            className={`whitespace-nowrap ${GHOST} ${saved ? "border-accent text-accent" : ""}`}
+            className={`whitespace-nowrap ${GHOST} ${saved ? "border-line-strong text-ink" : ""}`}
           >
             {saved ? "Saved" : saving ? "Saving..." : "Save job"}
           </button>
@@ -295,7 +299,7 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
           </div>
 
           {analyzeError && (
-            <p role="alert" className="text-[13px] text-score-missing">{analyzeError}</p>
+            <p role="alert" className="text-[13px] text-bad">{analyzeError}</p>
           )}
 
           {analysis && (
@@ -308,7 +312,7 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
               {analysis.requiredSkills?.length > 0 && (
                 <div>
                   <p className={SECTION_LABEL}>Required skills</p>
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
                     {analysis.requiredSkills.map((s) => {
                       const isMatched = match?.matched.includes(s);
                       const isMissing = match && !isMatched;
@@ -317,9 +321,9 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
                           key={s}
                           className={
                             isMatched
-                              ? CHIP_ACCENT
+                              ? CHIP_MARK
                               : isMissing
-                              ? `${CHIP} border-score-missing/30 bg-score-missing/5 text-score-missing`
+                              ? "text-[12px] text-bad"
                               : CHIP_LINE
                           }
                         >
@@ -356,10 +360,15 @@ function JobDetail({ job, onBuildResume, onAnalysis }: { job: Job; onBuildResume
               {analysis.keywords?.length > 0 && (
                 <div>
                   <p className={SECTION_LABEL}>ATS keywords</p>
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
-                    {analysis.keywords.map((k) => (
-                      <span key={k} className={CHIP_ACCENT}>{k}</span>
-                    ))}
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    {analysis.keywords.map((k) => {
+                      const isMatched = match?.matched.includes(k);
+                      return (
+                        <span key={k} className={isMatched ? CHIP_MARK : CHIP_LINE}>
+                          {k}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -563,10 +572,10 @@ export default function JobScannerPage() {
   if (checking) return <CheckingKey />;
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-ground">
       {/* Toast */}
       {toastMsg && (
-        <div className="fixed left-1/2 top-4 z-50 -translate-x-1/2 rounded-md bg-ink px-5 py-3 text-[14px] font-medium text-paper">
+        <div className="fixed left-1/2 top-4 z-50 -translate-x-1/2 rounded-md bg-ink px-5 py-3 text-[14px] font-medium text-ground">
           {toastMsg}
         </div>
       )}
@@ -581,7 +590,7 @@ export default function JobScannerPage() {
       />
 
       {/* Search bar */}
-      <div className="border-b border-line bg-surface">
+      <div className="border-b border-line bg-ground-2">
         <div className="mx-auto max-w-screen-xl px-4 pb-3 pt-4">
           <form onSubmit={handleSearch} className="flex flex-col gap-3 overflow-x-hidden sm:flex-row">
             <div className="flex-1">
@@ -622,7 +631,7 @@ export default function JobScannerPage() {
               onClick={() => setRemoteOnly((v) => !v)}
               aria-pressed={remoteOnly}
               className={`min-h-[44px] w-full whitespace-nowrap sm:w-auto ${GHOST} ${
-                remoteOnly ? "border-accent text-accent" : ""
+                remoteOnly ? "border-ink text-ink" : ""
               }`}
             >
               Remote only
@@ -652,7 +661,7 @@ export default function JobScannerPage() {
               {savedSearches.map((s, i) => (
                 <span
                   key={i}
-                  className="flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-1 text-[12px]"
+                  className="flex items-center gap-2 rounded-full border border-line bg-ground px-3 py-1 text-[12px]"
                 >
                   <button
                     onClick={() => applySavedSearch(s)}
@@ -679,7 +688,7 @@ export default function JobScannerPage() {
         {/* Intro state */}
         {!hasSearched && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <h1 className="font-serif text-[clamp(2rem,4vw,2.75rem)] leading-[1.1] tracking-[-0.01em]">
+            <h1 className="font-display font-bold text-[clamp(2rem,4vw,2.75rem)] leading-[1.1] tracking-[-0.02em]">
               Find your next role
             </h1>
             <p className="mt-4 max-w-[52ch] text-[17px] leading-[28px] text-ink-2">
@@ -691,7 +700,7 @@ export default function JobScannerPage() {
                 <button
                   key={kw}
                   onClick={() => { setKeywords(kw); setTimeout(() => { document.querySelector("form")?.requestSubmit(); }, 50); }}
-                  className={`rounded-full border border-line bg-surface px-3 py-1.5 text-[13px] text-ink-2 transition-colors duration-200 hover:border-ink hover:text-ink ${FOCUS}`}
+                  className={`rounded-full border border-line bg-ground-2 px-3 py-1.5 text-[13px] text-ink-2 transition-colors duration-200 hover:border-ink hover:text-ink ${FOCUS}`}
                 >
                   {kw}
                 </button>
@@ -704,7 +713,7 @@ export default function JobScannerPage() {
         {error && (
           <p
             role="alert"
-            className="mb-4 rounded-md border border-score-missing/30 bg-score-missing/5 p-4 text-[14px] text-score-missing"
+            className="mb-4 rounded-md border border-bad/30 bg-bad/5 p-4 text-[14px] text-bad"
           >
             {error}
           </p>
@@ -714,9 +723,9 @@ export default function JobScannerPage() {
         {hasSearched && (
           <div className="flex min-h-[calc(100vh-220px)] gap-4 sm:h-[calc(100vh-220px)]">
             <div
-              className={`fixed inset-0 z-30 overflow-y-auto bg-paper sm:hidden ${mobileView === 'detail' ? 'block' : 'hidden'}`}
+              className={`fixed inset-0 z-30 overflow-y-auto bg-ground sm:hidden ${mobileView === 'detail' ? 'block' : 'hidden'}`}
             >
-              <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-line bg-paper px-4 py-3">
+              <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-line bg-ground px-4 py-3">
                 <button
                   onClick={() => setMobileView('list')}
                   className={`flex min-h-[44px] items-center text-[14px] text-ink-2 transition-colors duration-200 hover:text-ink ${FOCUS}`}
@@ -731,7 +740,7 @@ export default function JobScannerPage() {
               {isLoading && jobs.length === 0 ? (
                 <div className="space-y-3">
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="animate-pulse rounded-md border border-line bg-surface p-4">
+                    <div key={i} className="animate-pulse rounded-md border border-line bg-ground-2 p-4">
                       <div className="flex gap-3">
                         <div className="h-10 w-10 rounded bg-line" />
                         <div className="flex-1 space-y-2">
@@ -778,7 +787,7 @@ export default function JobScannerPage() {
               {selectedJob ? (
                 <JobDetail job={selectedJob} onBuildResume={handleBuildResume} onAnalysis={setSelectedJobAnalysis} />
               ) : (
-                <div className={`flex h-full items-center justify-center bg-surface ${CAPTION}`}>
+                <div className={`flex h-full items-center justify-center bg-ground-2 ${CAPTION}`}>
                   Select a job to view details
                 </div>
               )}

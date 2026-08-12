@@ -7,9 +7,9 @@ import AppNav from "@/components/AppNav";
 import { createClient } from "@/lib/supabase/client";
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
-const PRIMARY = `rounded-md bg-ink px-4 py-2 text-[14px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 ${FOCUS}`;
-const GHOST = `inline-flex min-h-[44px] items-center rounded-md border border-line bg-surface px-3 text-[13px] font-medium text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
+const PRIMARY = `rounded-md bg-ink px-4 py-2 text-[14px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 ${FOCUS}`;
+const GHOST = `inline-flex min-h-[44px] items-center rounded-md border border-line bg-ground-2 px-3 text-[13px] font-medium text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`;
 const CAPTION = "text-[13px] text-ink-3";
 const SECTION_LABEL = "text-[13px] font-semibold text-ink";
 const QUIET = `inline-flex min-h-[44px] items-center rounded text-[13px] text-ink-3 transition-colors duration-200 hover:text-ink ${FOCUS}`;
@@ -65,9 +65,9 @@ function groupByDate(items: HistoryItem[]): [string, HistoryItem[]][] {
 
 // Class strings are written out in full so Tailwind can see them.
 function scoreTone(score: number) {
-  if (score >= 70) return "text-accent";
-  if (score >= 50) return "text-score-partial";
-  return "text-score-missing";
+  if (score >= 70) return "text-good";
+  if (score >= 50) return "text-warn";
+  return "text-bad";
 }
 
 function ResumeCard({ item }: { item: ResumeItem }) {
@@ -80,11 +80,11 @@ function ResumeCard({ item }: { item: ResumeItem }) {
   } | null;
 
   return (
-    <div className="overflow-hidden rounded-md border border-line bg-surface">
+    <div className="overflow-hidden rounded-md border border-line bg-ground-2">
       {/* Header */}
       <div className="flex items-start justify-between gap-3 p-4">
         <div className="flex min-w-0 flex-1 items-start gap-3">
-          <span className="flex-none rounded border border-line bg-paper px-2 py-0.5 text-[12px] text-ink-2">
+          <span className="flex-none rounded border border-line bg-ground px-2 py-0.5 text-[12px] text-ink-2">
             Resume
           </span>
           <div className="min-w-0">
@@ -123,7 +123,7 @@ function ResumeCard({ item }: { item: ResumeItem }) {
                 {resume.resume.skills.slice(0, 15).map((s, i) => (
                   <span
                     key={i}
-                    className="rounded border border-line bg-paper px-1.5 py-0.5 text-[12px] text-ink-2"
+                    className="rounded border border-line bg-ground px-1.5 py-0.5 text-[12px] text-ink-2"
                   >
                     {s}
                   </span>
@@ -204,10 +204,10 @@ function CoverLetterCard({ item }: { item: CoverLetterItem }) {
   };
 
   return (
-    <div className="overflow-hidden rounded-md border border-line bg-surface">
+    <div className="overflow-hidden rounded-md border border-line bg-ground-2">
       <div className="flex items-start justify-between gap-3 p-4">
         <div className="flex min-w-0 flex-1 items-start gap-3">
-          <span className="flex-none rounded border border-line bg-paper px-2 py-0.5 text-[12px] text-ink-2">
+          <span className="flex-none rounded border border-line bg-ground px-2 py-0.5 text-[12px] text-ink-2">
             Cover letter
           </span>
           <div className="min-w-0">
@@ -220,7 +220,7 @@ function CoverLetterCard({ item }: { item: CoverLetterItem }) {
           <span className={CAPTION}>{formatTime(item.created_at)}</span>
           <button
             onClick={handleCopy}
-            className={`${GHOST} ${copied ? "border-accent text-accent" : ""}`}
+            className={`${GHOST} ${copied ? "border-line-strong text-ink" : ""}`}
           >
             {copied ? "Copied" : "Copy"}
           </button>
@@ -233,7 +233,7 @@ function CoverLetterCard({ item }: { item: CoverLetterItem }) {
       {expanded && (
         <div className="border-t border-line">
           <div className="px-4 py-3">
-            <p className="whitespace-pre-wrap font-serif text-[15px] leading-[26px] text-ink">
+            <p className="whitespace-pre-wrap text-[15px] leading-[26px] text-ink">
               {item.cover_letter_text}
             </p>
           </div>
@@ -279,7 +279,7 @@ export default function HistoryPage() {
   const groups = groupByDate(items);
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-ground">
       <AppNav
         active="/history"
         container="max-w-3xl"
@@ -292,7 +292,7 @@ export default function HistoryPage() {
 
       <div className="mx-auto max-w-3xl px-4 py-8">
         <div className="mb-8">
-          <h1 className="font-serif text-[clamp(2rem,4vw,2.75rem)] leading-[1.1] tracking-[-0.01em]">
+          <h1 className="font-display font-bold text-[clamp(2rem,4vw,2.75rem)] leading-[1.1] tracking-[-0.02em]">
             Activity history
           </h1>
           <p className="mt-2 text-[17px] leading-[28px] text-ink-2">
@@ -311,7 +311,7 @@ export default function HistoryPage() {
         {!loading && error && (
           <p
             role="alert"
-            className="rounded-md border border-score-missing/30 bg-score-missing/5 p-4 text-[14px] text-score-missing"
+            className="rounded-md border border-bad/30 bg-bad/5 p-4 text-[14px] text-bad"
           >
             {error}
           </p>
@@ -319,7 +319,7 @@ export default function HistoryPage() {
 
         {!loading && !error && items.length === 0 && (
           <div className="py-16 text-center">
-            <h2 className="font-serif text-[28px] leading-tight tracking-[-0.01em]">
+            <h2 className="font-display font-bold text-[28px] leading-tight tracking-[-0.02em]">
               No activity yet
             </h2>
             <p className="mt-3 text-[17px] leading-[28px] text-ink-2">

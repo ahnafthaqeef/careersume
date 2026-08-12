@@ -33,11 +33,11 @@ interface TokenStats {
 }
 
 const FOCUS =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper";
-const PRIMARY = `w-full rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
+const PRIMARY = `w-full rounded-md bg-ink px-5 py-3 text-[15px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`;
 const GHOST = `inline-flex min-h-[44px] items-center rounded-md border border-line px-3 text-[13px] font-semibold text-ink transition-colors duration-200 hover:border-ink ${FOCUS}`;
 const QUIET = `inline-flex min-h-[44px] items-center rounded px-2 text-[13px] text-ink-2 transition-colors duration-200 hover:text-ink ${FOCUS}`;
-const PANEL = "rounded-md border border-line bg-surface p-6 shadow-paper";
+const PANEL = "rounded-md border border-line bg-ground-2 p-6 shadow-sheet";
 const CAPTION = "text-[13px] text-ink-3";
 
 const FEATURES = ["ATS optimized", "Match score", "AI rewriting", "URL import"];
@@ -358,19 +358,17 @@ export default function BuilderPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  /** Section numerals, per the Highlight wizard pattern: the step you are on takes the
+   *  mark, the ones behind you mute, the ones ahead stay quiet. */
   const stepNumberClass = (state: "done" | "active" | "waiting") =>
-    `flex h-7 w-7 flex-none items-center justify-center rounded-full border text-[13px] font-semibold ${
-      state === "done"
-        ? "border-accent bg-accent text-accent-ink"
-        : state === "active"
-        ? "border-ink bg-ink text-paper"
-        : "border-line text-ink-3"
+    `flex-none font-display text-[20px] font-bold leading-none tabular-nums ${
+      state === "done" ? "text-ink-2" : state === "active" ? "mark text-ink" : "text-ink-3"
     }`;
 
   if (checking) return <CheckingKey />;
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-ground">
       <AppNav
         active="/builder"
         container="max-w-6xl"
@@ -403,7 +401,7 @@ export default function BuilderPage() {
           {!result && (
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h1 className="font-serif text-[clamp(2rem,4vw,2.75rem)] leading-[1.1] tracking-[-0.01em]">
+                <h1 className="font-display text-[clamp(2rem,4vw,2.75rem)] font-bold leading-[1.1] tracking-[-0.02em]">
                   Resume builder
                 </h1>
                 <p className="mt-2 text-[17px] leading-[28px] text-ink-2">
@@ -414,7 +412,7 @@ export default function BuilderPage() {
                 {FEATURES.map((f) => (
                   <span
                     key={f}
-                    className="rounded border border-line bg-surface px-2 py-0.5 text-[12px] text-ink-3"
+                    className="rounded border border-line bg-ground-2 px-2 py-0.5 text-[12px] text-ink-3"
                   >
                     {f}
                   </span>
@@ -440,7 +438,7 @@ export default function BuilderPage() {
                       isActive
                         ? "font-semibold text-ink"
                         : done
-                        ? "text-accent"
+                        ? "text-ink-2"
                         : "text-ink-3"
                     }`}
                   >
@@ -455,7 +453,7 @@ export default function BuilderPage() {
           {!result && (userEmail || userRole === "admin") && (
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {userEmail && (
-                <div className="rounded-md border border-line bg-surface px-5 py-4">
+                <div className="rounded-md border border-line bg-ground-2 px-5 py-4">
                   <p className={CAPTION}>Your activity</p>
                   <div className="mt-3 grid grid-cols-4 gap-3">
                     {userStatsLoading ? (
@@ -473,7 +471,7 @@ export default function BuilderPage() {
                         { val: userStats.allTime, label: "All time" },
                       ].map(({ val, label }) => (
                         <div key={label} className="flex flex-col items-center">
-                          <span className="font-serif text-[24px] leading-none text-ink">
+                          <span className="font-display text-[24px] font-bold leading-none tabular-nums text-ink">
                             {val}
                           </span>
                           <span className={`mt-1 text-center ${CAPTION}`}>{label}</span>
@@ -489,7 +487,7 @@ export default function BuilderPage() {
               )}
 
               {userRole === "admin" && (
-                <div className="rounded-md border border-line bg-surface px-5 py-4">
+                <div className="rounded-md border border-line bg-ground-2 px-5 py-4">
                   <p className={CAPTION}>AI usage by provider</p>
                   {tokenStatsLoading ? (
                     <div className="mt-3 flex flex-col gap-2">
@@ -536,7 +534,7 @@ export default function BuilderPage() {
             {/* Step 1: Job Description */}
             <div className={PANEL}>
               <div className="mb-6 flex items-center gap-3">
-                <div className={stepNumberClass(completedJob ? "done" : "active")}>1</div>
+                <div className={stepNumberClass(completedJob ? "done" : "active")}>01</div>
                 <div>
                   <h2 className="text-[17px] font-semibold text-ink">Job description</h2>
                   <p className={CAPTION}>Paste the job posting or enter a URL.</p>
@@ -559,7 +557,7 @@ export default function BuilderPage() {
                     completedProfile && completedJob ? "done" : completedJob ? "active" : "waiting"
                   )}
                 >
-                  2
+                  02
                 </div>
                 <div>
                   <h2 className="text-[17px] font-semibold text-ink">Your profile</h2>
@@ -578,7 +576,7 @@ export default function BuilderPage() {
         {canGenerate && !result && (
           <div className={`mt-6 animate-slide-up ${PANEL}`}>
             <div className="mb-6 flex items-center gap-3">
-              <div className={stepNumberClass("active")}>3</div>
+              <div className={stepNumberClass("active")}>03</div>
               <div>
                 <h2 className="text-[17px] font-semibold text-ink">Choose a template</h2>
                 <p className={CAPTION}>Pick a design that fits your industry and style.</p>
@@ -594,10 +592,10 @@ export default function BuilderPage() {
             {error && (
               <div
                 role="alert"
-                className="mb-4 animate-fade-in rounded-md border border-score-missing/30 bg-score-missing/5 p-4"
+                className="mb-4 animate-fade-in rounded-md border border-bad/30 bg-bad/5 p-4"
               >
-                <p className="text-[14px] font-semibold text-score-missing">Generation failed</p>
-                <p className="mt-1 text-[14px] text-score-missing">{error}</p>
+                <p className="text-[14px] font-semibold text-bad">Generation failed</p>
+                <p className="mt-1 text-[14px] text-bad">{error}</p>
               </div>
             )}
 
@@ -608,16 +606,17 @@ export default function BuilderPage() {
             </button>
 
             {isGenerating && (
-              <div className="mt-4 rounded-md border border-line bg-surface p-4">
+              <div className="mt-4 rounded-md border border-line bg-ground-2 p-4">
                 <p className="text-[14px] font-medium text-ink">
                   {displayMessage || generationStatus}
                 </p>
                 <p className={`mt-1 ${CAPTION}`}>
                   The AI is reading your experience and tailoring it to the job.
                 </p>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line">
+                {/* A hairline track with an ink fill: progress is chrome, not data. */}
+                <div className="mt-3 h-1 overflow-hidden bg-line">
                   <div
-                    className="h-full rounded-full bg-accent transition-all duration-500"
+                    className="h-full bg-ink transition-all duration-500"
                     style={{ width: `${fakeProgress}%` }}
                   />
                 </div>
@@ -630,7 +629,7 @@ export default function BuilderPage() {
 
         {/* Not ready yet */}
         {!canGenerate && (completedJob || completedProfile) && (
-          <p className="mt-6 rounded-md border border-line bg-surface p-4 text-center text-[14px] text-ink-2">
+          <p className="mt-6 rounded-md border border-line bg-ground-2 p-4 text-center text-[14px] text-ink-2">
             {!completedJob
               ? "Analyze a job description to continue."
               : "Add your profile to continue."}
@@ -668,7 +667,7 @@ export default function BuilderPage() {
                     {isBoosting ? "Boosting ATS score..." : "Boost ATS score"}
                   </button>
                   {boostError && (
-                    <p role="alert" className="mt-2 text-center text-[13px] text-score-missing">
+                    <p role="alert" className="mt-2 text-center text-[13px] text-bad">
                       {boostError}
                     </p>
                   )}
@@ -676,8 +675,8 @@ export default function BuilderPage() {
               )}
 
               {atsBoostResult && (
-                <div className="rounded-md border border-accent/30 bg-accent/5 p-4">
-                  <p className="text-[15px] font-semibold text-accent">
+                <div className="rounded-md border border-line bg-ground-2 p-4">
+                  <p className="text-[15px] font-semibold text-good">
                     ATS score: {atsBoostResult.original_score} to {atsBoostResult.boosted_score}, up{" "}
                     {atsBoostResult.boosted_score - atsBoostResult.original_score} points
                   </p>
@@ -700,7 +699,7 @@ export default function BuilderPage() {
                 <button
                   onClick={handleGenerate}
                   disabled={isGenerating}
-                  className={`rounded-md bg-ink px-4 py-2 text-[14px] font-semibold text-paper transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`}
+                  className={`rounded-md bg-ink px-4 py-2 text-[14px] font-semibold text-ground transition-colors duration-200 hover:bg-ink-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-3 ${FOCUS}`}
                 >
                   {isGenerating ? "Regenerating..." : "Regenerate"}
                 </button>
@@ -718,7 +717,9 @@ export default function BuilderPage() {
 
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 sm:flex-row">
-          <p className="font-serif text-lg leading-none">Careersume</p>
+          <p className="font-display text-lg font-bold leading-none tracking-[-0.02em]">
+            Career<span className="mark">sume</span>
+          </p>
           <p className={CAPTION}>
             Your profile and your key stay in your own account. Nothing is sold.
           </p>
