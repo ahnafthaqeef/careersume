@@ -110,3 +110,5 @@ npm run deploy:cf  # build, assert the Worker is still lean, then deploy
 
 ## Known Issues / Notes
 - `.next/` build cache can cause stale JS; delete it and restart if UI feels wrong
+
+**Who deploys:** production deploys only work from the Cloudflare account that owns the `univa.my` zone (Ahnaf's). Contributors: push to `main` and ask for a deploy; running `deploy:cf` from another account uploads a stray worker and fails at the domain step.

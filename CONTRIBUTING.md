@@ -63,3 +63,5 @@ Issues labelled [`good-first-issue`](https://github.com/ahnafthaqeef/careersume/
 **Dark mode is the canonical first contribution.** The colour tokens are already centralised in `tailwind.config.ts` and the app uses them consistently, so the work is a real, self-contained feature: add a dark palette, wire a toggle that respects `prefers-color-scheme`, and walk the app surfaces to fix whatever the tokens do not cover. If you want it, say so on the issue first so two people do not build it twice.
 
 Not sure whether an idea fits? Open an issue and ask before you build. That is always cheaper than a rejected PR.
+
+Production deploys run from the maintainer's Cloudflare account (it owns the domain zone). Push to `main` and ask for a deploy rather than running `npm run deploy:cf` yourself.
