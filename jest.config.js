@@ -1,6 +1,7 @@
-import type { Config } from 'jest'
-
-const config: Config = {
+/** @type {import('jest').Config} */
+// Plain JS on purpose: a .ts config makes Jest require ts-node, which is not a
+// dependency of this project (CI installs from the lockfile and would fail).
+const config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
@@ -23,4 +24,4 @@ const config: Config = {
   },
 }
 
-export default config
+module.exports = config
