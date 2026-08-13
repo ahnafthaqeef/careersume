@@ -94,7 +94,7 @@ export default function LandingPage() {
           <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-16">
             <div>
               <h1 className="font-display text-[clamp(3.25rem,7vw,5.5rem)] font-bold leading-[1.02] tracking-[-0.02em] text-balance">
-                The resume, <Mark>rewritten</Mark> for the job.
+                The resume, <Mark variant="hero">rewritten</Mark> for the job.
               </h1>
               <p className={`mt-8 max-w-[52ch] ${BODY}`}>
                 Paste a job description. Careersume tailors your resume to it: right keywords, right
@@ -338,7 +338,7 @@ export default function LandingPage() {
             the product. univa.my carries the underline of a real text link (TEXT_LINK) rather
             than sitting as plain text — it is the one thing here meant to be pressed. */}
         <p className="mt-10 text-[13px] text-ink-3">
-          by <span className="font-medium text-ink-2">UNIVA GROUP SDN BHD</span> — for more info,
+          by <span className="font-medium text-ink-2">UNIVA GROUP SDN BHD</span>. For more info,
           visit{" "}
           <a href="https://univa.my" target="_blank" rel="noreferrer" className={TEXT_LINK}>
             univa.my

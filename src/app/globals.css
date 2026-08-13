@@ -17,6 +17,9 @@
 
   /* The motion signature: everything the mark does, it does with this. */
   --swipe: 150ms cubic-bezier(0.2, 0, 0, 1);
+  /* The hero's stroke is the same family, slowed and delayed so the draw is still visibly
+     underway once the reader's eye reaches the word, instead of resolving before it lands. */
+  --swipe-hero: 550ms cubic-bezier(0.2, 0, 0, 1) 250ms;
 }
 
 @layer base {
@@ -96,6 +99,16 @@
   transform: rotate(-0.4deg) scaleX(1);
 }
 
+/* The hero's stroke: same device, but slow enough to watch. Only ::before (the background
+   layer) animates; the text itself never moves or fades, so it stays readable mid-draw. */
+.mark-swipe-hero::before {
+  transform: rotate(-0.4deg) scaleX(0);
+  transition: transform var(--swipe-hero);
+}
+.mark-swipe-hero[data-revealed="true"]::before {
+  transform: rotate(-0.4deg) scaleX(1);
+}
+
 /* The active or hovered nav item, underlined by the same stroke. CSS only. */
 .nav-link {
   position: relative;
@@ -117,7 +130,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mark-swipe::before {
+  .mark-swipe::before,
+  .mark-swipe-hero::before {
     transform: rotate(-0.4deg);
     transition: none;
   }

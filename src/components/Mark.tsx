@@ -9,7 +9,15 @@ import { useEffect, useRef, useState } from "react";
  * the server-rendered surfaces that need a static stroke, such as the wordmark, reuse it
  * without pulling in this client component.
  */
-export default function Mark({ children }: { children: React.ReactNode }) {
+export default function Mark({
+  children,
+  variant,
+}: {
+  children: React.ReactNode;
+  /** "hero" swaps in the slower, delayed stroke defined by `.mark-swipe-hero`, for the one
+   *  above-the-fold instance where the reader's eye needs time to land before it draws. */
+  variant?: "hero";
+}) {
   const ref = useRef<HTMLSpanElement>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -29,8 +37,10 @@ export default function Mark({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, []);
 
+  const swipeClass = variant === "hero" ? "mark-swipe-hero" : "mark-swipe";
+
   return (
-    <span ref={ref} className="mark mark-swipe" data-revealed={revealed}>
+    <span ref={ref} className={`mark ${swipeClass}`} data-revealed={revealed}>
       {children}
     </span>
   );
