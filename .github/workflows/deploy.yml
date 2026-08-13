@@ -1,0 +1,49 @@
+name: CI and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+      # NEXT_PUBLIC_* values are compiled into the client bundle and must be real.
+      # The two server-only secrets are resolved from `wrangler secret` at runtime;
+      # the build only needs the modules to evaluate, so placeholders are fine here.
+      - name: Build the Worker
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder-never-used-at-runtime
+          BYOK_ENCRYPTION_KEY: ci-placeholder-never-used-at-runtime
+        run: npx opennextjs-cloudflare build
+      - name: Assert the Worker is lean
+        run: node scripts/assert-worker-lean.mjs
+      - name: Deploy (main only, needs CLOUDFLARE_API_TOKEN secret)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::notice::CLOUDFLARE_API_TOKEN secret is not set; build verified, deploy skipped."
+            exit 0
+          fi
+          npx opennextjs-cloudflare deploy
