@@ -332,6 +332,12 @@ export default function LandingPage() {
             </a>
           </nav>
         </div>
+
+        {/* The colophon: who built it. Its own quiet line at the very bottom, below the
+            links, so the last thing on the page is the company behind the product. */}
+        <p className="mt-10 text-[13px] text-ink-3">
+          by <span className="font-medium text-ink-2">UNIVA GROUP SDN BHD</span>
+        </p>
       </footer>
     </div>
   );

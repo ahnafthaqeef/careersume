@@ -20,12 +20,17 @@ export default function LandingNav() {
     <header className="sticky top-0 z-50 border-b border-line bg-ground">
       <div className="mx-auto flex max-w-content items-center justify-between gap-6 px-6 py-3.5">
         {/* The wordmark: the product name with the highlighter already through it. Static
-            here, since the mark never animates on chrome the reader passes every scroll. */}
-        <Link
-          href="/"
-          className={`font-display text-xl font-bold leading-none tracking-[-0.02em] text-ink ${FOCUS}`}
-        >
-          <Wordmark />
+            here, since the mark never animates on chrome the reader passes every scroll.
+            The maker's credit sits on its own line beneath it — small, uppercase and widely
+            tracked so it reads as attribution rather than a second brand competing with the
+            product name. The gap clears the highlight stroke's 0.06em bleed below the text. */}
+        <Link href="/" className={`flex flex-col gap-1 text-ink ${FOCUS}`}>
+          <span className="font-display text-xl font-bold leading-none tracking-[-0.02em]">
+            <Wordmark />
+          </span>
+          <span className="text-[10px] font-medium uppercase leading-none tracking-[0.16em] text-ink-3">
+            by UNIVA
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
