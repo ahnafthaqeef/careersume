@@ -15,14 +15,14 @@
 		"binding": "ASSETS"
 	},
 
-	// Routing is attached at deploy time, once the Cloudflare account is wired up.
-	// resume.aibizmy.com is on the aibizmy.com zone, so it goes on as a custom
-	// domain. Uncomment, then `npm run deploy:cf`:
-	//
-	// "routes": [
-	// 	{
-	// 		"pattern": "resume.aibizmy.com",
-	// 		"custom_domain": true
-	// 	}
-	// ]
+	// resume.aibizmy.com is attached as a custom domain (live since 2026-08-12,
+	// currently serving the holding page from this same worker name). Forks:
+	// change or remove this pattern; deploys against a zone you do not own fail
+	// with a clear error.
+	"routes": [
+		{
+			"pattern": "resume.aibizmy.com",
+			"custom_domain": true
+		}
+	]
 }
