@@ -333,10 +333,16 @@ export default function LandingPage() {
           </nav>
         </div>
 
-        {/* The colophon: who built it. Its own quiet line at the very bottom, below the
-            links, so the last thing on the page is the company behind the product. */}
+        {/* The colophon: who built it, and where to go for more. Its own quiet line at the
+            very bottom, below the links, so the last thing on the page is the company behind
+            the product. univa.my carries the underline of a real text link (TEXT_LINK) rather
+            than sitting as plain text — it is the one thing here meant to be pressed. */}
         <p className="mt-10 text-[13px] text-ink-3">
-          by <span className="font-medium text-ink-2">UNIVA GROUP SDN BHD</span>
+          by <span className="font-medium text-ink-2">UNIVA GROUP SDN BHD</span> — for more info,
+          visit{" "}
+          <a href="https://univa.my" target="_blank" rel="noreferrer" className={TEXT_LINK}>
+            univa.my
+          </a>
         </p>
       </footer>
     </div>
