@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { adminClient } from "@/lib/supabase/admin";
+import Wordmark from "@/components/Wordmark";
 
 const PANEL = "rounded-md border border-line bg-ground-2";
 const CAPTION = "text-[13px] text-ink-3";
@@ -163,7 +164,7 @@ export default async function AdminPage() {
               href="/"
               className="font-display text-xl font-bold leading-none tracking-[-0.02em] text-ink"
             >
-              Career<span className="mark">sume</span>
+              <Wordmark />
             </Link>
             <span className="text-[14px] text-ink-2">Admin</span>
           </div>

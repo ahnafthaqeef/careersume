@@ -1,6 +1,7 @@
 import Link from "next/link";
 import LandingNav from "@/components/LandingNav";
 import Mark from "@/components/Mark";
+import Wordmark from "@/components/Wordmark";
 import ResumeShowcase from "@/components/ResumeShowcase";
 
 export const dynamic = "force-static";
@@ -310,7 +311,7 @@ export default function LandingPage() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-display text-xl font-bold leading-none tracking-[-0.02em]">
-              Career<span className="mark">sume</span>
+              <Wordmark />
             </p>
             <p className="mt-3 text-[14px] text-ink-3">
               Free and open source, for people who are still applying.

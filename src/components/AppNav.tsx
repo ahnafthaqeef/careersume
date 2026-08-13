@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Wordmark from "@/components/Wordmark";
 
 /** The signed-in tool set. Every app page shows the same row so the nav never
  *  changes shape as you move between them. */
@@ -48,7 +49,7 @@ export default function AppNav({
             href="/"
             className={`font-display text-xl font-bold leading-none tracking-[-0.02em] text-ink ${FOCUS}`}
           >
-            Career<span className="mark">sume</span>
+            <Wordmark />
           </Link>
           <nav className="hidden items-center gap-6 lg:flex">
             {LINKS.map((link) => (

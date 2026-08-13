@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Wordmark from "@/components/Wordmark";
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
@@ -76,7 +77,7 @@ export default function RegisterPage() {
 
           <div className="text-center">
             <Link href="/" className={WORDMARK}>
-              Career<span className="mark">sume</span>
+              <Wordmark />
             </Link>
           </div>
 
@@ -104,7 +105,7 @@ export default function RegisterPage() {
 
         <div className="text-center">
           <Link href="/" className={WORDMARK}>
-            Career<span className="mark">sume</span>
+            <Wordmark />
           </Link>
           <p className="mt-3 text-[15px] text-ink-2">Create your free account</p>
         </div>

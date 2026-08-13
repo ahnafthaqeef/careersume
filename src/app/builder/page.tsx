@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import Wordmark from "@/components/Wordmark";
 import JobInput from "@/components/JobInput";
 import ProfileInput from "@/components/ProfileInput";
 import TemplateSelector from "@/components/TemplateSelector";
@@ -718,7 +719,7 @@ export default function BuilderPage() {
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 sm:flex-row">
           <p className="font-display text-lg font-bold leading-none tracking-[-0.02em]">
-            Career<span className="mark">sume</span>
+            <Wordmark />
           </p>
           <p className={CAPTION}>
             Your profile and your key stay in your own account. Nothing is sold.

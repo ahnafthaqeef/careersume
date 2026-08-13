@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Wordmark from "@/components/Wordmark";
 
 const GITHUB = "https://github.com/ahnafthaqeef/careersume";
 
@@ -24,7 +25,7 @@ export default function LandingNav() {
           href="/"
           className={`font-display text-xl font-bold leading-none tracking-[-0.02em] text-ink ${FOCUS}`}
         >
-          Career<span className="mark">sume</span>
+          <Wordmark />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

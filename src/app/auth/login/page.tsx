@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { safeRelativePath } from "@/lib/safeRedirect";
+import Wordmark from "@/components/Wordmark";
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground";
@@ -76,7 +77,7 @@ export default function LoginPage() {
             href="/"
             className={`font-display text-[28px] font-bold leading-none tracking-[-0.02em] text-ink ${FOCUS}`}
           >
-            Career<span className="mark">sume</span>
+            <Wordmark />
           </Link>
           <p className="mt-3 text-[15px] text-ink-2">Sign in to your account</p>
         </div>

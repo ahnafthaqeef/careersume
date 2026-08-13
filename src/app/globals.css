@@ -64,6 +64,29 @@
   transform-origin: left center;
 }
 
+/* The wordmark's stroke: same device as `.mark`, but the bleed is asymmetric. Sitting right
+   after the trailing "r" of "Career", a symmetric bleed plus the rotation let the stroke creep
+   onto that glyph. `margin-left` opens a hairline gap before the stroke box even starts, and
+   the left inset stays close to 0 so the stroke doesn't bleed back into that gap. The right
+   side keeps the full outward bleed, so the swipe still reads as marker overrun. */
+.mark-wm {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  isolation: isolate;
+  margin-left: 0.05em;
+}
+.mark-wm::before {
+  content: "";
+  position: absolute;
+  inset: 0.09em -0.15em 0.06em 0.01em;
+  z-index: -1;
+  border-radius: 0.125rem;
+  background: var(--mark);
+  transform: rotate(-0.4deg);
+  transform-origin: left center;
+}
+
 /* Reveal: the stroke swipes in once, the first time it is scrolled into view. */
 .mark-swipe::before {
   transform: rotate(-0.4deg) scaleX(0);

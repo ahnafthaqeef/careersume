@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import KeyWizard from "@/components/KeyWizard";
+import Wordmark from "@/components/Wordmark";
 import { providerCards } from "@/lib/providers";
 import { safeRelativePath } from "@/lib/safeRedirect";
 
@@ -27,7 +28,7 @@ export default async function OnboardingPage({
           href="/"
           className="font-display text-[22px] font-bold leading-none tracking-[-0.02em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-ground-2"
         >
-          Career<span className="mark">sume</span>
+          <Wordmark />
         </Link>
 
         <div className="mt-8">
