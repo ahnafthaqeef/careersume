@@ -15,13 +15,13 @@
 		"binding": "ASSETS"
 	},
 
-	// resume.aibizmy.com is attached as a custom domain (live since 2026-08-12,
-	// currently serving the holding page from this same worker name). Forks:
-	// change or remove this pattern; deploys against a zone you do not own fail
-	// with a clear error.
+	// careersume.univa.my is the production custom domain (moved from
+	// resume.aibizmy.com on 2026-08-13; the old hostname 301s here via a tiny
+	// separate redirect worker). Forks: change or remove this pattern; deploys
+	// against a zone you do not own fail with a clear error.
 	"routes": [
 		{
-			"pattern": "resume.aibizmy.com",
+			"pattern": "careersume.univa.my",
 			"custom_domain": true
 		}
 	]

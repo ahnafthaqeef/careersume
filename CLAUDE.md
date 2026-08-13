@@ -9,7 +9,7 @@ yellow used only as a highlighter stroke. Tokens in `tailwind.config.ts`, `globa
 `src/lib/theme.ts`. Spec: `docs/superpowers/specs/2026-08-04-careersume-highlight-rebrand-design.md`
 in the EA repo. The device itself is `.mark` in `globals.css` plus `src/components/Mark.tsx`.
 **Local URL:** http://localhost:3001
-**Live URL:** https://resume.aibizmy.com
+**Live URL:** https://careersume.univa.my
 **GitHub:** repo to become `github.com/ahnafthaqeef/careersume` (currently a private path repo)
 
 ## How BYOK works
@@ -105,7 +105,7 @@ npm run deploy:cf  # build, assert the Worker is still lean, then deploy
 - Production secrets are set once with `wrangler secret put NEXT_PUBLIC_SUPABASE_URL`,
   and the same for `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
   `BYOK_ENCRYPTION_KEY`, and `JSEARCH_API_KEY` if the instance wants job search.
-- `resume.aibizmy.com` is on the aibizmy.com zone. The `routes` stanza in `wrangler.jsonc` is
+- `careersume.univa.my` is on the univa.my zone (moved 2026-08-13; resume.aibizmy.com 301s to it). The `routes` stanza in `wrangler.jsonc` is
   commented out; uncomment it when the custom domain is attached at deploy time.
 
 ## Known Issues / Notes
